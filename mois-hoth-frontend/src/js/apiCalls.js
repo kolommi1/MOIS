@@ -27,6 +27,12 @@ let API_Calls = {
     async getAllPayments(dtoIn) {
         let commandUri = this.getUri("paymentList");
         return await API_Calls.call("get", commandUri, dtoIn);
+    },
+
+    async getPaymentsByCategory(categoryIds, dtoIn ) {
+        let commandUri = this.getUri("paymentListByCategoryID/" + categoryIds);
+        return await API_Calls.call("get", commandUri, dtoIn);
+
     }
 
 };

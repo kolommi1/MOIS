@@ -1,25 +1,77 @@
+body {
+  background-color: lightsteelblue;
+}
+
 .App {
   text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 20vmin;
   pointer-events: none;
 }
+
+.App-header {
+  background-color: #282c34;
+  color: white;
+}
+
+.categories{
+  display: block;
+}
+.category-checkbox-button{
+  display: inline-block;
+  height: 50px;
+}
+.category-checkbox-button span{
+  margin: 5px;
+  padding: 10px 25px;
+  background-color: #EFEFEF;
+  border-radius: 4px;
+  border: 1px solid #D0D0D0;
+  text-align:center;
+  color: black;
+}
+
+.category-checkbox-button:hover > span{
+  background: lightskyblue;
+  color: black;
+}
+
+.category-checkbox-button input:checked + span {
+  background-color: royalblue;
+  color: white;
+}
+
+.Table {
+  margin: 0 auto;
+  text-align: center;
+  border-collapse: collapse;
+  border: 3px solid #ddd;
+  width: 60%;
+}
+
+.Table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: royalblue;
+  color: white;
+}
+
+.Table td, .Table th {
+  border: 1px solid white;
+  padding: 8px;
+}
+
+.Table tr{background-color: lightskyblue;}
+
+.Table tr:hover {background-color: steelblue;}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: white;
 }
 
 .tabs-menu {

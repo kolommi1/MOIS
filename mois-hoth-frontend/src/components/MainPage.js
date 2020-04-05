@@ -1,13 +1,35 @@
 import React, { Component } from 'react';
-import '../css/Table.css';
 import API_Calls from "../js/apiCalls";
+import logo from "../logo.svg";
+import Categories from "./Categories";
 
-export default class CategoryObleceni extends Component {
+export default class MainPage extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            payments: []
+            payments: [],
+            checkedCategories: "",
         };
+        this.handleCategories = this.handleCategories.bind(this);
+    }
+
+    handleCategories = (categoriesValue) => {
+        this.setState({checkedCategories: categoriesValue});
+        if(categoriesValue.length>0) {
+            this.updateTable(categoriesValue);
+        }
+        else {
+            this.componentDidMount();
+        }
+    };
+
+    async updateTable(categoryIds) {
+        try {
+            let result = await API_Calls.getPaymentsByCategory(categoryIds);
+            this.setState({ payments: result});
+        } catch (error) {
+            this.setState({ error:error });
+        }
     }
 
     async componentDidMount() {
@@ -21,8 +43,12 @@ export default class CategoryObleceni extends Component {
 
     render() {
         return (
-            <div>
-                <h2>Oblečení</h2>
+           <div class="MainPage">
+               <header className="App-header">
+                   <img src={logo} className="App-logo" alt="logo" />
+                   <Categories onCheckedCategoryChanged={this.handleCategories}/>
+               </header>
+
                 <table class="Table">
                     <tr>
                         <th>Id</th><th>Číslo účtu příjemce</th><th>Kategorie</th><th>Částka</th><th>Variabilní symbol</th><th>Termín splatnosti</th>
@@ -31,8 +57,8 @@ export default class CategoryObleceni extends Component {
                     {this.renderPaymentData()}
 
                 </table>
-            </div>
-        );
+           </div>
+        )
     }
 
     renderPaymentData() {
@@ -46,5 +72,6 @@ export default class CategoryObleceni extends Component {
             )
         })
     }
+
 }
 
