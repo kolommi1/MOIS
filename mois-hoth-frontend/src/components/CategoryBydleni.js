@@ -4,7 +4,7 @@ import API_Calls from "../js/apiCalls";
 
 export default class CategoryBydleni extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             payments: []
         };
@@ -23,9 +23,14 @@ export default class CategoryBydleni extends Component {
         return (
             <div>
                 <h2>Bydlení</h2>
-                <table class="Table">
+                <table className="Table">
                     <tr>
-                        <th>Id</th><th>Číslo účtu příjemce</th><th>Kategorie</th><th>Částka</th><th>Variabilní symbol</th><th>Termín splatnosti</th>
+                        <th>Id</th>
+                        <th>Číslo účtu příjemce</th>
+                        <th>Kategorie</th>
+                        <th>Částka</th>
+                        <th>Variabilní symbol</th>
+                        <th>Termín splatnosti</th>
                     </tr>
 
                     {this.renderPaymentData()}

@@ -27,6 +27,11 @@ let API_Calls = {
     async getAllPayments(dtoIn) {
         let commandUri = this.getUri("paymentList");
         return await API_Calls.call("get", commandUri, dtoIn);
+    },
+
+    async authentication(dtoIn) {
+        let commandUri = this.getUri("userAuthenticateBool");
+        return await API_Calls.call("get", commandUri, dtoIn);
     }
 
 };
