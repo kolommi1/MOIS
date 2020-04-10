@@ -6,7 +6,7 @@ import Tab from './Tab';
 export default class Tabs extends Component {
     static propTypes = {
         children: PropTypes.instanceOf(Array).isRequired,
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -18,7 +18,7 @@ export default class Tabs extends Component {
 
     onClickTab = (tab) => {
         this.setState({ activeTabName: tab });
-    }
+    };
 
     render() {
         const {

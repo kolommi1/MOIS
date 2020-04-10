@@ -2,7 +2,7 @@ let API_Calls = {
 
     async call(method, url, dtoIn, headers) {
         let body;
-        if(dtoIn){
+        if (dtoIn) {
             body = JSON.stringify(dtoIn);
         }
 
@@ -18,7 +18,7 @@ let API_Calls = {
         return resp;
     },
 
-    getUri: function(useCase) {
+    getUri: function (useCase) {
         return (
             "http://localhost:5000/" + useCase
         );
@@ -29,10 +29,14 @@ let API_Calls = {
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 
-    async getPaymentsByCategory(categoryIds, dtoIn ) {
+    async getPaymentsByCategory(categoryIds, dtoIn) {
         let commandUri = this.getUri("paymentListByCategoryID/" + categoryIds);
         return await API_Calls.call("get", commandUri, dtoIn);
+    },
 
+    async userAuthenticate(email, password, dtoIn) {
+        let commandUri = this.getUri("userAuthenticate/" + email + "/" + password);
+        return await API_Calls.call("get", commandUri, dtoIn);
     }
 
 };
