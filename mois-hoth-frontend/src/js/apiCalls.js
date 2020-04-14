@@ -37,7 +37,17 @@ let API_Calls = {
     async userAuthenticate(email, password, dtoIn) {
         let commandUri = this.getUri("userAuthenticate/" + email + "/" + password);
         return await API_Calls.call("get", commandUri, dtoIn);
-    }
+    },
+
+    async getPaymentsByUser(accountNumber ,dtoIn) {
+        let commandUri = this.getUri("paymentListByAccountNumber/" + accountNumber);
+        return await API_Calls.call("get", commandUri, dtoIn);
+    },
+
+    async   getPaymentsByCategoryUser(categoryIds, accountNumber, dtoIn) {
+        let commandUri = this.getUri("paymentListByCategoryIDUser/" + categoryIds+ "/" + accountNumber);
+        return await API_Calls.call("get", commandUri, dtoIn);
+    },
 
 };
 

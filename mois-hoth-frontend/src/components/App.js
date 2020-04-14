@@ -21,19 +21,19 @@ class App extends Component {
     render() {
 
         //LOGIN - zatím zakomentovaný (je potřeba dodělat)
-        /*if (this.state.user == null) {
+        if (this.state.user == null) {
             return (
                 <div className="App">
                     <Login onLogin={this.setUser} />
                 </div>
             );
-        } else {*/
+        } else {
             return (
                 <div className="App">
-                    <MainPage/>
+                    <MainPage user={this.state.user}/>
                 </div>
             );
-        //}
+        }
     }
 }
 

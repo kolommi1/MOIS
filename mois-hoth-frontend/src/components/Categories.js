@@ -13,6 +13,7 @@ class Categories extends React.Component {
         this.handleChange = this.handleChange.bind(this);
 
         this.categories = [
+            {name: 'check-box-cat-0', key: 'checkBoxCat0', label: 'Nezařazeno', categoryId: '0'},
             {name: 'check-box-cat-1', key: 'checkBoxCat1', label: 'Jídlo', categoryId: '1'},
             {name: 'check-box-cat-2', key: 'checkBoxCat2', label: 'Oblečení', categoryId: '2'},
             {name: 'check-box-cat-3', key: 'checkBoxCat3', label: 'Cestování', categoryId: '3'},
