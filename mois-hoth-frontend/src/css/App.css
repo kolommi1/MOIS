@@ -3,11 +3,9 @@ body {
 }
 #root{
   width: 100%;
-  height: 100%;
 }
 .App {
   width: 100%;
-  height: 100%;
   text-align: center;
 }
 
@@ -16,108 +14,10 @@ body {
   pointer-events: none;
 }
 
-.userLogo{
-  flex-basis:50%;
-  text-align: left;
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.divider {
-  clear: both;
-}
-.userPanel {
-  display: flex;
-  padding: 50px;
-  justify-content: center;
-  align-items: center;
-}
-
-.userInfo {
-  flex-basis: 50%;
-  text-align: right;
-  margin: 25px;
-}
-.payments {
-  min-width: 600px;
-  width: 60%;
-  margin: 0 auto;
-}
-
-.payment {
-  display: flex;
-}
-
-.payment_left {
-  flex-basis: 40%;
-  text-align: left;
-}
-
-.payment_middle {
-  flex-basis: 40%;
-}
-
-.payment_right {
-  text-align: right;
-  flex-basis: 20%;
-}
-
 .App-header {
   background-color: #282c34;
   color: white;
 }
-
-.categories{
-  display: block;
-}
-.category-checkbox-button{
-  display: inline-block;
-  height: 50px;
-}
-.category-checkbox-button span{
-  margin: 5px;
-  padding: 10px 25px;
-  background-color: #EFEFEF;
-  border-radius: 4px;
-  border: 1px solid #D0D0D0;
-  text-align:center;
-  color: black;
-}
-
-.category-checkbox-button:hover > span{
-  background: lightskyblue;
-  color: black;
-}
-
-.category-checkbox-button input:checked + span {
-  background-color: royalblue;
-  color: white;
-}
-
-.Table {
-  margin: 0 auto;
-  text-align: center;
-  border-collapse: collapse;
-  border: 3px solid #ddd;
-  width: 60%;
-}
-
-.Table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: center;
-  background-color: royalblue;
-  color: white;
-}
-
-.Table td, .Table th {
-  border: 1px solid white;
-  padding: 8px;
-}
-
-.Table tr{background-color: lightskyblue;}
-
-.Table tr:hover {background-color: steelblue;}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -150,19 +50,5 @@ body {
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-@media (max-width: 640px) {
-
-  .payments {
-    width: 100%;
-  }
-  .payment {
-    flex-direction: column;
-  }
-
-  .payment_left, .payment_right {
-    text-align: center;
   }
 }

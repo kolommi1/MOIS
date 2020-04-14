@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import API_Calls from "../js/apiCalls";
 import logo from "../logo.svg";
 import Categories from "./Categories";
+import '../css/MainPage.css';
 import Modal from "./Modal";
 
 export default class MainPage extends Component {
@@ -78,6 +79,8 @@ export default class MainPage extends Component {
              {/*   <Modal onSubmitModal={this.onSummitModal}></Modal>*/}
 
                 <div class="payments">
+                    <h5>Platby od: 1.1.2019 do 31.12.2019</h5>
+
                     {this.renderPaymentData2()}
                 </div>
             </div>
@@ -113,7 +116,7 @@ export default class MainPage extends Component {
                     </div>
                     <div className="payment_middle">
                         <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
-                        <div className="payment_date">Datum: {payment.dueDate}</div>
+                        <div className="payment_date">Termín splatnosti: {payment.dueDate}</div>
                     </div>
                     <div className="payment_right">
                         <div className="payment_amount">{payment.value.amount} Kč</div>
