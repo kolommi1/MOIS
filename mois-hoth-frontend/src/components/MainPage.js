@@ -47,19 +47,18 @@ export default class MainPage extends Component {
         return (
             <div className="MainPage">
                 <header className="App-header">
-                    <div class="userPanel">
-                        <div class="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
-                        <div class="userInfo">
-                            <div class="userName">{this.props.user.name} {this.props.user.sure_name}</div>
-                            <div class="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.number}/{this.props.user.userAccount.bankCode_user}</div>
-                            <div class="logout_button"><a href=".">Odhlásit se</a></div>
+                    <div className="userPanel">
+                        <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
+                        <div className="userInfo">
+                            <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
+                            <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.number}/{this.props.user.userAccount.bankCode_user}</div>
+                            <div className="logout_button"><a href=".">Odhlásit se</a></div>
                         </div>
                     </div>
-                    <div class="divider"></div>
                     <Categories onCheckedCategoryChanged={this.handleCategories}/>
                 </header>
 
-                <table className="Table">
+              {/*  <table className="Table">
                     <thead>
                     <tr>
                         <th>Id</th>
@@ -74,11 +73,11 @@ export default class MainPage extends Component {
                     <tbody>
                     {this.renderPaymentData()}
                     </tbody>
-                </table>
+                </table>*/}
 
-             {/*   <Modal onSubmitModal={this.onSummitModal}></Modal>*/}
+                <Modal onSubmitModal={this.onSummitModal}></Modal>
 
-                <div class="payments">
+                <div className="payments">
                     <h5>Platby od: 1.1.2019 do 31.12.2019</h5>
 
                     {this.renderPaymentData2()}
@@ -87,10 +86,18 @@ export default class MainPage extends Component {
         )
     }
 
-    onSummitModal(){
-        // Call. post Payment
+   async onSummitModal(newPayment) {
+        // new payments are from current logged user
+        newPayment.userAccount.prefix_user = this.props.user.userAccount.prefix_user;
+        newPayment.userAccount.accountNumber_user = this.props.user.userAccount.number;
+        newPayment.userAccount.bankCode_user = this.props.user.userAccount.bankCode_user;
 
+        let new_Payment = await API_Calls.postPayment(newPayment);
+       this.setState({
+           payments: this.state.payments.concat([new_Payment])
+       })
     }
+
     renderPaymentData() {
         return this.state.payments.map((payment, index) => {
             return (
@@ -109,9 +116,9 @@ export default class MainPage extends Component {
     renderPaymentData2() {
         return this.state.payments.map((payment, index) => {
             return (
-                <div class="payment" key={payment.id}>
-                    <div class="payment_left">
-                        <div class="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
+                <div className="payment" key={payment.id}>
+                    <div className="payment_left">
+                        <div className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
                         <div className="payment_category">Kategorie: {payment.categoryId}</div>
                     </div>
                     <div className="payment_middle">

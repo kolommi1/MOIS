@@ -44,9 +44,14 @@ let API_Calls = {
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 
-    async   getPaymentsByCategoryUser(categoryIds, accountNumber, dtoIn) {
+    async getPaymentsByCategoryUser(categoryIds, accountNumber, dtoIn) {
         let commandUri = this.getUri("paymentListByCategoryIDUser/" + categoryIds+ "/" + accountNumber);
         return await API_Calls.call("get", commandUri, dtoIn);
+    },
+
+    async postPayment(payment) {
+        let commandUri = this.getUri("paymentItem");
+        return await API_Calls.call("post", commandUri, payment);
     },
 
 };

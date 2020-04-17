@@ -7,14 +7,56 @@ class Modal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            payment: {
+                "value": {
+                    "amount": 0,
+                    "currency": ""
+                },
+                "userAccount": {
+                    "prefix_user": "",
+                    "accountNumber_user": "",
+                    "bankCode_user": ""
+                },
+                "partyAccount": {
+                    "prefix": "",
+                    "accountNumber": "",
+                    "bankCode": ""
+                },
+                "dueDate": "",
+                "recurringPayment": {
+                    "firstPayment": "",
+                    "lastPayment": "",
+                    "interval": ""
+                },
+                "payeeMessage": "",
+                "payerMessage": "",
+                "categoryId": 0,
+                "additionalInfo": {
+                    "constantSymbol": "",
+                    "variableSymbol": "",
+                    "specificSymbol": ""
+                },
+                "id": 0,
+                "editableByUser": true,
+                "realizationStatus": ""
+            },
         };
 
         this.onSubmitModal = this.onSubmitModal.bind(this);
+        this.handleAmountChange = this.handleAmountChange.bind(this);
+        this.handleCurrChange = this.handleCurrChange.bind(this);
+        this.handlePrefixChange = this.handlePrefixChange.bind(this);
+        this.handleAccNumberChange = this.handleAccNumberChange.bind(this);
+        this.handleBankCodeChange = this.handleBankCodeChange.bind(this);
+        this.handleVSChange = this.handleVSChange.bind(this);
+        this.handleCSChange = this.handleCSChange.bind(this);
+        this.handleSSChange = this.handleSSChange.bind(this);
+        this.handlePayeeMessChange = this.handlePayeeMessChange.bind(this);
+        this.handlePayerMessChange = this.handlePayerMessChange.bind(this);
     }
 
     onSubmitModal(e) {
-        this.props.onSubmitModal();
+        this.props.onSubmitModal(this.state.payment);
     }
 
     render() {
@@ -36,13 +78,13 @@ class Modal extends Component {
                                 <div className="md-form mb-2">
                                     <div>
                                         <label data-error="wrong" data-success="right" htmlFor="amount"> Částka </label>
-                                        <input type="number" id="amount" className="form-control validate"/>
+                                        <input type="number" id="amount" className="form-control validate" value={this.state.payment.value.amount} onChange={this.handleAmountChange} />
                                     </div>
                                 </div>
                                 <div className="md-form mb-2">
                                     <div>
                                         <label data-error="wrong" data-success="right" htmlFor="curr"> Měna </label>
-                                        <input type="text" id="curr" className="form-control validate"/>
+                                        <input type="text" id="curr" className="form-control validate" value={this.state.payment.value.currency} onChange={this.handleCurrChange}/>
                                     </div>
                                 </div>
 
@@ -51,20 +93,19 @@ class Modal extends Component {
                                 </div>
 
                                 <div className="md-form mb-2">
-                                    <input type="text" id="acc_pref" className="form-control validate"/>
-                                        <label data-error="wrong" data-success="right"
-                                               htmlFor="acc_pref"> Prefix </label>
+                                    <label data-error="wrong" data-success="right" htmlFor="acc_pref"> Prefix </label>
+                                    <input type="text" id="acc_pref" className="form-control validate" value={this.state.payment.partyAccount.prefix} onChange={this.handlePrefixChange}/>
+
                                 </div>
 
                                 <div className="md-form mb-2">
-                                    <input type="text" id="acc_numb" className="form-control validate"/>
-                                        <label data-error="wrong" data-success="right" htmlFor="acc_numb">Číslo</label>
+                                    <label data-error="wrong" data-success="right" htmlFor="acc_numb">Číslo</label>
+                                    <input type="text" id="acc_numb" className="form-control validate" value={this.state.payment.partyAccount.accountNumber} onChange={this.handleAccNumberChange}/>
                                 </div>
 
                                 <div className="md-form mb-2">
-                                    <input type="text" id="acc_code" className="form-control validate"/>
-                                        <label data-error="wrong" data-success="right" htmlFor="acc_code">Kód
-                                            banky</label>
+                                    <label data-error="wrong" data-success="right" htmlFor="acc_code">Kód banky</label>
+                                    <input type="text" id="acc_code" className="form-control validate" value={this.state.payment.partyAccount.bankCode} onChange={this.handleBankCodeChange}/>
                                 </div>
 
                                 <div>
@@ -72,21 +113,19 @@ class Modal extends Component {
                                 </div>
 
                                 <div className="md-form mb-2">
-                                    <input type="text" id="var_s" className="form-control validate"/>
-                                        <label data-error="wrong" data-success="right" htmlFor="var_s"> Variabilní
-                                            symbol </label>
+                                    <label data-error="wrong" data-success="right" htmlFor="var_s"> Variabilní symbol </label>
+                                    <input type="text" id="var_s" className="form-control validate" value={this.state.payment.additionalInfo.variableSymbol} onChange={this.handleVSChange}/>
                                 </div>
 
                                 <div className="md-form mb-2">
-                                    <input type="text" id="kons_s" className="form-control validate"/>
-                                        <label data-error="wrong" data-success="right" htmlFor="kons_s"> Konstantní
-                                            symbol</label>
+                                    <label data-error="wrong" data-success="right" htmlFor="kons_s"> Konstantní symbol</label>
+                                    <input type="text" id="kons_s" className="form-control validate" value={this.state.payment.additionalInfo.constantSymbol} onChange={this.handleCSChange}/>
                                 </div>
 
                                 <div className="md-form mb-2">
-                                    <input type="text" id="spec_s" className="form-control validate"/>
-                                        <label data-error="wrong" data-success="right" htmlFor="spec_s">Specifický
-                                            symbol</label>
+                                    <label data-error="wrong" data-success="right" htmlFor="spec_s">Specifický symbol</label>
+                                    <input type="text" id="spec_s" className="form-control validate" value={this.state.payment.additionalInfo.specificSymbol} onChange={this.handleSSChange}/>
+
                                 </div>
 
                                 <div>
@@ -94,14 +133,17 @@ class Modal extends Component {
 
                                 </div>
                                 <div className="md-form mb-3">
-                                    <input type="text" id="mess" className="form-control validate"/>
-                                        <label data-error="wrong" data-success="right" htmlFor="mess">Zpráva</label>
+                                    <label data-error="wrong" data-success="right" htmlFor="mess">Zpráva pro příjemnce</label>
+                                    <input type="text" id="mess" className="form-control validate" value={this.state.payment.payeeMessage} onChange={this.handlePayeeMessChange}/>
                                 </div>
-
+                                <div className="md-form mb-3">
+                                    <label data-error="wrong" data-success="right" htmlFor="mess_02">Zpráva pro odesilatele</label>
+                                    <input type="text" id="mess_02" className="form-control validate" value={this.state.payment.payerMessage} onChange={this.handlePayerMessChange}/>
+                                </div>
 
                             </div>
                             <div className="modal-footer d-flex justify-content-center">
-                                <button onClick={this.onSubmitModal} className="btn btn-deep-orange">Zadat</button>
+                                <button type="button" onClick={this.onSubmitModal} className="btn btn-deep-orange" data-dismiss="modal">Zadat</button>
                             </div>
                         </div>
                     </div>
@@ -113,6 +155,130 @@ class Modal extends Component {
                 </div>
             </div>
         );
+    }
+
+    handleAmountChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                value: {
+                    ...prevState.payment.value,
+                    amount: value
+                }
+            }
+        }))
+    }
+
+    handleCurrChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                value: {
+                    ...prevState.payment.value,
+                    currency: value
+                }
+            }
+        }))
+    }
+
+    handlePrefixChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                partyAccount: {
+                    ...prevState.payment.partyAccount,
+                    prefix: value
+                }
+            }
+        }))
+    }
+
+    handleAccNumberChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                partyAccount: {
+                    ...prevState.payment.partyAccount,
+                    accountNumber: value
+                }
+            }
+        }))
+    }
+
+    handleBankCodeChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                partyAccount: {
+                    ...prevState.payment.partyAccount,
+                    bankCode: value
+                }
+            }
+        }))
+    }
+
+    handleVSChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                additionalInfo: {
+                    ...prevState.payment.additionalInfo,
+                    variableSymbol: value
+                }
+            }
+        }))
+    }
+
+    handleCSChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                additionalInfo: {
+                    ...prevState.payment.additionalInfo,
+                    constantSymbol: value
+                }
+            }
+        }))
+    }
+
+    handleSSChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                additionalInfo: {
+                    ...prevState.payment.additionalInfo,
+                    specificSymbol: value
+                }
+            }
+        }))
+    }
+
+    handlePayeeMessChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                payeeMessage: value
+            }
+        }))
+    }
+
+    handlePayerMessChange(e) {
+        const value = e.target.value;
+        this.setState(prevState => ({
+            payment: {
+                ...prevState.payment,
+                payerMessage: value
+            }
+        }))
     }
 }
 
