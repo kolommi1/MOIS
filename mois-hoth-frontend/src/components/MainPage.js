@@ -27,7 +27,7 @@ export default class MainPage extends Component {
 
     async updateTable(categoryIds) {
         try {
-            let result = await API_Calls.getPaymentsByCategoryUser(categoryIds, this.props.user.userAccount.number);
+            let result = await API_Calls.getPaymentsByCategoryUser(categoryIds, this.props.user.userAccount.accountNumber_user);
             this.setState({payments: result});
         } catch (error) {
             this.setState({error: error});
@@ -36,7 +36,7 @@ export default class MainPage extends Component {
 
     async componentDidMount() {
         try {
-            let result = await API_Calls.getPaymentsByUser(this.props.user.userAccount.number);
+            let result = await API_Calls.getPaymentsByUser(this.props.user.userAccount.accountNumber_user);
             this.setState({payments: result});
         } catch (error) {
             this.setState({error: error});
@@ -51,7 +51,7 @@ export default class MainPage extends Component {
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
-                            <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.number}/{this.props.user.userAccount.bankCode_user}</div>
+                            <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
                             <div className="logout_button"><a href=".">Odhlásit se</a></div>
                         </div>
                     </div>
@@ -88,9 +88,7 @@ export default class MainPage extends Component {
 
    async onSummitModal(newPayment) {
         // new payments are from current logged user
-        newPayment.userAccount.prefix_user = this.props.user.userAccount.prefix_user;
-        newPayment.userAccount.accountNumber_user = this.props.user.userAccount.number;
-        newPayment.userAccount.bankCode_user = this.props.user.userAccount.bankCode_user;
+        newPayment.userAccount = this.props.user.userAccount;
 
         let new_Payment = await API_Calls.postPayment(newPayment);
        this.setState({
