@@ -211,7 +211,7 @@ export default class MainPage extends Component {
     }
 
     getDataForLineChart() {
-        //should be only from last 6 months
+        //TODO should be only from last 6 months
         let paymentsArr = this.state.payments;
         let splitDateArray = [];
         let result = [];
