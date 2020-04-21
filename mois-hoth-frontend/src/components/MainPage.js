@@ -267,12 +267,8 @@ export default class MainPage extends Component {
 
         result = [["Měsíce", "Nezařazeno","Jídlo","Oblečení","Cestování", "Hygiena", "Bydlení"],
             month0, month1, month2, month3, month4, month5];
-
         indexOfEmptyColumn = this.checkEmptyColumns(result);
-
         return this.deleteEmptyColumns(indexOfEmptyColumn,result);
-
-
     }
 
     getArrayForMonthCategory(monthArrPar, paymentCategory, paymentAmount) {
@@ -282,16 +278,13 @@ export default class MainPage extends Component {
         else if (paymentCategory === 3) monthArrPar[4] += parseInt(paymentAmount);
         else if (paymentCategory === 4) monthArrPar[5] += parseInt(paymentAmount);
         else if (paymentCategory === 5) monthArrPar[6] += parseInt(paymentAmount);
-
         return monthArrPar;
     }
 
     checkEmptyColumns(array) {
         let indexOfEmptyColumn = [];
-
         for (let j = 0; j<array[0].length; j++) {
             if (array[1][j] === 0){
-
                 if (array[2][j]===0 &&
                     array[3][j]===0 &&
                     array[4][j]===0 &&
