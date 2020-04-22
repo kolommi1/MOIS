@@ -7,6 +7,7 @@ import Modal from "./Modal";
 import PieChartSelected from "./PieChartSelected";
 import PieChartAll from "./PieChartAll";
 import LineChartSelected from "./LineChartSelected";
+import moment from "moment";
 
 export default class MainPage extends Component {
 
@@ -253,98 +254,67 @@ export default class MainPage extends Component {
     }
 
     getDataForLineChart() {
-        //TODO should be only from last 6 months
+        //receive disp. data
         let paymentsArr = this.state.payments;
-        let splitDateArray = [];
-        let result = [];
-        let indexOfEmptyColumn = [];
-        let moment = require('moment');
+        let paymentDueDate;
 
-        let monthDateNow = moment().format('MM');
-        let monthDateNow1 = moment().subtract(1, 'months').format('MM');
-        let monthDateNow2 = moment().subtract(2, 'months').format('MM');
-        let monthDateNow3 = moment().subtract(3, 'months').format('MM');
-        let monthDateNow4 = moment().subtract(4, 'months').format('MM');
-        let monthDateNow5 = moment().subtract(5, 'months').format('MM');
+        let oldestNewestArray = this.getOldestAndNewestPayment(paymentsArr);
+        let preparedArrayForLineChart = this.prepareArrayForLineChart(oldestNewestArray[2],oldestNewestArray[0]);
+        console.log(preparedArrayForLineChart);
 
-        let month0 = [monthDateNow5,0,0,0,0,0,0],
-            month1 = [monthDateNow4,0,0,0,0,0,0],
-            month2 = [monthDateNow3,0,0,0,0,0,0],
-            month3 = [monthDateNow2,0,0,0,0,0,0],
-            month4 = [monthDateNow1,0,0,0,0,0,0],
-            month5 = [monthDateNow,0,0,0,0,0,0];
-
-        for (let i = 0; i < paymentsArr.length; i++) {
-            splitDateArray = paymentsArr[i].dueDate.toString().split(".");
-
-            switch (splitDateArray[1]) {
-                case monthDateNow5:
-                    month0 = this.getArrayForMonthCategory(month0, paymentsArr[i].categoryId,
-                        paymentsArr[i].value.amount);
-                    break;
-                case monthDateNow4:
-                    month1 = this.getArrayForMonthCategory(month1, paymentsArr[i].categoryId,
-                        paymentsArr[i].value.amount);
-                    break;
-                case monthDateNow3:
-                    month2 = this.getArrayForMonthCategory(month2, paymentsArr[i].categoryId,
-                        paymentsArr[i].value.amount);
-                    break;
-                case monthDateNow2:
-                    month3 = this.getArrayForMonthCategory(month3, paymentsArr[i].categoryId,
-                        paymentsArr[i].value.amount);
-                    break;
-                case monthDateNow1:
-                    month4 = this.getArrayForMonthCategory(month4, paymentsArr[i].categoryId,
-                       paymentsArr[i].value.amount);
-                    break;
-                case monthDateNow:
-                    month5 = this.getArrayForMonthCategory(month5, paymentsArr[i].categoryId,
-                        paymentsArr[i].value.amount);
-                    break;
-                default:
-
-            }
-        }
-
-        result = [["Měsíce", "Nezařazeno","Jídlo","Oblečení","Cestování", "Hygiena", "Bydlení"],
-            month0, month1, month2, month3, month4, month5];
-        indexOfEmptyColumn = this.checkEmptyColumns(result);
-        return this.deleteEmptyColumns(indexOfEmptyColumn,result);
-    }
-
-    getArrayForMonthCategory(monthArrPar, paymentCategory, paymentAmount) {
-        if (paymentCategory === 0) monthArrPar[1] += parseInt(paymentAmount);
-        else if (paymentCategory === 1) monthArrPar[2] += parseInt(paymentAmount);
-        else if (paymentCategory === 2) monthArrPar[3] += parseInt(paymentAmount);
-        else if (paymentCategory === 3) monthArrPar[4] += parseInt(paymentAmount);
-        else if (paymentCategory === 4) monthArrPar[5] += parseInt(paymentAmount);
-        else if (paymentCategory === 5) monthArrPar[6] += parseInt(paymentAmount);
-        return monthArrPar;
-    }
-
-    checkEmptyColumns(array) {
-        let indexOfEmptyColumn = [];
-        for (let j = 0; j<array[0].length; j++) {
-            if (array[1][j] === 0){
-                if (array[2][j]===0 &&
-                    array[3][j]===0 &&
-                    array[4][j]===0 &&
-                    array[5][j]===0) {
-                    indexOfEmptyColumn.push(j);
+        for (let i=0; i<paymentsArr.length; i++) {
+            paymentDueDate = moment(this.changeDate(paymentsArr[i].dueDate)).format( "MM.YYYY");
+            for (let j=1; j<preparedArrayForLineChart.length; j++) {
+                console.log("hovnohovno"+ preparedArrayForLineChart[j][0] + "  "+ paymentDueDate);
+                if (preparedArrayForLineChart[j][0]===paymentDueDate){
+                    console.log("hovno");
+                    preparedArrayForLineChart[j][(paymentsArr[i].categoryId + 1)] += paymentsArr[i].value.amount;
                 }
             }
         }
-        return indexOfEmptyColumn;
+        return preparedArrayForLineChart;
     }
 
-    deleteEmptyColumns(arrayOfColsToBeDeleted, array2D) {
-        for (let j = 0; j < arrayOfColsToBeDeleted.length; j++) {
-            for (let i = 0; i < array2D.length; i++) {
-                array2D[i].splice(arrayOfColsToBeDeleted[j],1);
+    getOldestAndNewestPayment(paymentsArr) {
+        let newestDate;
+        let oldestDate;
+        if (paymentsArr.length > 0) {
+            oldestDate = moment(this.changeDate(paymentsArr[0].dueDate));
+            newestDate = moment(this.changeDate(paymentsArr[0].dueDate));
+        } else {
+            oldestDate = moment();
+            newestDate = moment();
+        }
+
+        let differenceMonth;
+        for (let i = 0; i < paymentsArr.length; i++) {
+            if (oldestDate >= moment(this.changeDate(paymentsArr[i].dueDate))) {
+                oldestDate = moment(this.changeDate(paymentsArr[i].dueDate));
+            }
+            if (newestDate <= moment(this.changeDate(paymentsArr[i].dueDate))) {
+                newestDate =  moment(this.changeDate(paymentsArr[i].dueDate));
             }
         }
-        return array2D;
+        differenceMonth = newestDate.diff(oldestDate, 'months', false);
+        return [oldestDate.format("DD.MM.YYYY"), newestDate.format("DD.MM.YYYY"), differenceMonth+1];
+    }
+
+    prepareArrayForLineChart(numberOfMonths, arrayOld) {
+        let dataForChart = [];
+        //TODO rename
+        dataForChart.push(["Datum","Nezařezeno","Jídlo","Oblečení","Cestování","Hygiena","Bydlení"]);
+        for (let i = 0; i < numberOfMonths; i++) {
+
+            let tmp2 = this.changeDate(arrayOld);
+            dataForChart.push([moment(tmp2).add(i, "month").format("MM.YYYY"),0,0,0,0,0,0]);
+        }
+        return dataForChart;
+    }
+
+    changeDate(date) {
+        let tmp = date.toString().split(".");
+        let tmp2 = tmp[2]+"."+tmp[1]+"."+tmp[0];
+        return tmp2;
     }
 }
 
