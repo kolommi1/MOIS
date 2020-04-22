@@ -360,13 +360,17 @@ export default class MainPage extends Component {
                     break;
             }
         }
+
         return indexOfEmptyColumn;
     }
 
     deleteEmptyColumns(arrayOfColsToBeDeleted, array2D) {
         for (let j = 0; j < arrayOfColsToBeDeleted.length; j++) {
+
             for (let i = 1; i < array2D[0].length; i++){
+
                 if (array2D[0][i] === arrayOfColsToBeDeleted[j]) {
+
                     for(let k = 0; k < array2D.length; k++) {
                         array2D[k].splice(i, 1);
                     }
