@@ -1,4 +1,11 @@
 
+.dates input{
+    margin-left: 10px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+}
+
 .payments {
     min-width: 600px;
     width: 60%;
@@ -9,6 +16,10 @@
 
 .payments h5 {
  text-align: left;
+}
+
+.payment_amount {
+    font-weight: bold;
 }
 
 .payment {

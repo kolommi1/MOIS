@@ -12,30 +12,41 @@ export default class MainPage extends Component {
 
     constructor(props) {
         super(props);
+
+        let datefrom, dateto;
+        // set dateTo to current Day
+        dateto = new Date().toISOString().substr(0, 10);
+        // set dateFrom to first Day of current Month
+        datefrom = dateto.substr(0, 8)+"01";
+
         this.state = {
             payments: [],
             paymentsAll: [],
             checkedCategories: "",
+            dateTo: dateto,
+            dateFrom: datefrom
         };
         this.handleCategories = this.handleCategories.bind(this);
         this.onSummitModal = this.onSummitModal.bind(this);
         this.getCategorySummarySelected = this.getCategorySummarySelected.bind(this);
         this.getCategorySummaryAll = this.getCategorySummaryAll.bind(this);
         this.getDataForLineChart = this.getDataForLineChart.bind(this);
+        this.handleDateFromChange = this.handleDateFromChange.bind(this);
+        this.handleDateToChange = this.handleDateToChange.bind(this);
     }
 
     handleCategories = (categoriesValue) => {
         this.setState({checkedCategories: categoriesValue});
         if (categoriesValue.length > 0) {
-            this.updateTable(categoriesValue);
+            this.updateTable(this.state.dateFrom, this.state.dateTo, categoriesValue);
         } else {
-            this.componentDidMount();
+            this.updateTableNoCategory(this.state.dateFrom, this.state.dateTo);
         }
     };
 
-    async updateTable(categoryIds) {
+    async updateTable(dateFrom, dateTo, categoryIds) {
         try {
-            let result = await API_Calls.getPaymentsByCategoryUser(categoryIds, this.props.user.userAccount.accountNumber_user);
+            let result = await API_Calls.getPaymentsByDateByCategoryByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user, categoryIds);
             this.setState({payments: result});
         } catch (error) {
             this.setState({error: error});
@@ -44,9 +55,18 @@ export default class MainPage extends Component {
 
     async componentDidMount() {
         try {
-            let result = await API_Calls.getPaymentsByUser(this.props.user.userAccount.accountNumber_user);
+            let result = await API_Calls.getPaymentsByDateByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user);
             this.setState({payments: result});
             this.setState({paymentsAll: result});
+        } catch (error) {
+            this.setState({error: error});
+        }
+    }
+
+    async updateTableNoCategory(dateFrom, dateTo) {
+        try {
+            let result = await API_Calls.getPaymentsByDateByUser(dateFrom, dateTo, this.props.user.userAccount.accountNumber_user);
+            this.setState({payments: result});
         } catch (error) {
             this.setState({error: error});
         }
@@ -67,27 +87,15 @@ export default class MainPage extends Component {
                     <Categories onCheckedCategoryChanged={this.handleCategories}/>
                 </header>
 
-              {/*  <table className="Table">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Číslo účtu příjemce</th>
-                        <th>Kategorie</th>
-                        <th>Částka</th>
-                        <th>Variabilní symbol</th>
-                        <th>Termín splatnosti</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    {this.renderPaymentData()}
-                    </tbody>
-                </table>*/}
-
                 <Modal onSubmitModal={this.onSummitModal}/>
 
                 <div className="payments">
-                    <h5>Platby od: 1.1.2019 do 31.12.2019</h5>
+                    <div className="dates">
+                        <label htmlFor="dateFrom">Platby od: </label>
+                        <input type="date" required id="dateFrom" max={this.state.dateTo} name="dateFrom" value={this.state.dateFrom} onChange={this.handleDateFromChange} />
+                        <label htmlFor="dateTo">do: </label>
+                        <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom} value={this.state.dateTo} onChange={this.handleDateToChange} />
+                    </div>
                     {this.renderPaymentData2()}
                 </div>
 
@@ -106,26 +114,12 @@ export default class MainPage extends Component {
         let new_Payment = await API_Calls.postPayment(newPayment);
         this.setState({
            payments: this.state.payments.concat([new_Payment]),
-       })
+       });
        this.setState({
            paymentsAll: this.state.paymentsAll.concat([new_Payment]),
        })
     }
 
-    renderPaymentData() {
-        return this.state.payments.map((payment, index) => {
-            return (
-                <tr key={payment.id}>
-                    <td>{payment.id}</td>
-                    <td>{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</td>
-                    <td>{payment.categoryId}</td>
-                    <td>{payment.value.amount}</td>
-                    <td>{payment.additionalInfo.variableSymbol}</td>
-                    <td>{payment.dueDate}</td>
-                </tr>
-            )
-        })
-    }
 
     renderPaymentData2() {
         return this.state.payments.map((payment, index) => {
@@ -145,6 +139,26 @@ export default class MainPage extends Component {
                 </div>
             )
         })
+    }
+
+    handleDateFromChange(e) {
+        const value = e.target.value;
+        this.setState( {dateFrom: value});
+        if (this.state.checkedCategories.length > 0) {
+            this.updateTable(value, this.state.dateTo, this.state.checkedCategories);
+        } else {
+            this.updateTableNoCategory(value, this.state.dateTo);
+        }
+    }
+
+    handleDateToChange(e) {
+        const value = e.target.value;
+        this.setState( {dateTo: value});
+        if (this.state.checkedCategories.length > 0) {
+            this.updateTable(this.state.dateFrom, value, this.state.checkedCategories);
+        } else {
+            this.updateTableNoCategory(this.state.dateFrom, value);
+        }
     }
 
     getCategorySummarySelected() {

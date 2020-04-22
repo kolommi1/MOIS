@@ -39,13 +39,15 @@ let API_Calls = {
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 
-    async getPaymentsByUser(accountNumber ,dtoIn) {
-        let commandUri = this.getUri("paymentListByAccountNumber/" + accountNumber);
+    async getPaymentsByDateByUser(from, to, accountNumber , dtoIn) {
+        let commandUri = this.getUri("paymentListByDateUser/" + from + "/" + to + "/" + accountNumber);
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 
-    async getPaymentsByCategoryUser(categoryIds, accountNumber, dtoIn) {
-        let commandUri = this.getUri("paymentListByCategoryIDUser/" + categoryIds+ "/" + accountNumber);
+    async getPaymentsByDateByCategoryByUser(from, to, accountNumber, categoryIds, dtoIn) {
+        console.log(categoryIds);
+        let commandUri = this.getUri("paymentListByDateUserCategory/" + from + "/" + to + "/" + accountNumber + "/" + categoryIds);
+        console.log(commandUri);
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 
