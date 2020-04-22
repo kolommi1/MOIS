@@ -56,8 +56,9 @@ export default class MainPage extends Component {
     async componentDidMount() {
         try {
             let result = await API_Calls.getPaymentsByDateByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user);
+            let resultAll = await API_Calls.getPaymentsByUser(this.props.user.userAccount.accountNumber_user);
             this.setState({payments: result});
-            this.setState({paymentsAll: result});
+            this.setState({paymentsAll: resultAll});
         } catch (error) {
             this.setState({error: error});
         }
@@ -99,10 +100,11 @@ export default class MainPage extends Component {
                     {this.renderPaymentData2()}
                 </div>
 
-                <PieChartAll categorySummaryAll={this.getCategorySummaryAll()}/>
-                <PieChartSelected categorySummarySelected={this.getCategorySummarySelected()}/>
-                <LineChartSelected lineChartData={this.getDataForLineChart()}/>
-
+                <div className="charts">
+                    <PieChartAll categorySummaryAll={this.getCategorySummaryAll()}/>
+                    <PieChartSelected categorySummarySelected={this.getCategorySummarySelected()}/>
+                    <LineChartSelected lineChartData={this.getDataForLineChart()}/>
+                </div>
             </div>
         )
     }

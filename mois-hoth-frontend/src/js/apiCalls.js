@@ -24,8 +24,8 @@ let API_Calls = {
         );
     },
 
-    async getAllPayments(dtoIn) {
-        let commandUri = this.getUri("paymentList");
+    async getPaymentsByUser(accountNumber, dtoIn) {
+        let commandUri = this.getUri("paymentListByAccountNumber/" + accountNumber);
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 

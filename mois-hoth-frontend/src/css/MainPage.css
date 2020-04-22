@@ -6,6 +6,21 @@
     cursor: pointer;
 }
 
+.charts {
+    display: flex;
+    min-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.PieChartSelected {
+    width: 33%;
+}LineChartSelected   PieChartAll
+ .LineChartSelected {
+     width: 33%;
+ }.PieChartAll {
+      width: 33%;
+  }
 .payments {
     min-width: 600px;
     width: 60%;
