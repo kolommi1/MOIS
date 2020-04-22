@@ -15,7 +15,7 @@ class LineChartSelected extends Component {
             <div className="LineChartSelected">
                 <div style={{display: 'flex', maxWidth: 900}}>
                     <Chart
-                        width={'600px'}
+                        width={'1200px'}
                         height={'400px'}
                         chartType="LineChart"
                         loader={<div>Loading Chart</div>}

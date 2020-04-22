@@ -33,6 +33,7 @@ export default class MainPage extends Component {
         this.getDataForLineChart = this.getDataForLineChart.bind(this);
         this.handleDateFromChange = this.handleDateFromChange.bind(this);
         this.handleDateToChange = this.handleDateToChange.bind(this);
+        this.onCatsInputChange = this.onCatsInputChange.bind(this);
     }
 
     handleCategories = (categoriesValue) => {
@@ -103,8 +104,8 @@ export default class MainPage extends Component {
                 <div className="charts">
                     <PieChartAll categorySummaryAll={this.getCategorySummaryAll()}/>
                     <PieChartSelected categorySummarySelected={this.getCategorySummarySelected()}/>
-                    <LineChartSelected lineChartData={this.getDataForLineChart()}/>
                 </div>
+                <LineChartSelected lineChartData={this.getDataForLineChart()}/>
             </div>
         )
     }
@@ -129,7 +130,15 @@ export default class MainPage extends Component {
                 <div className="payment" key={payment.id}>
                     <div className="payment_left">
                         <div className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
-                        <div className="payment_category">Kategorie: {payment.categoryId}</div>
+                        <span className="payment_category">Kategorie: </span>
+                        <select id="cats_input" name="cats_input" onChange={(e) => this.onCatsInputChange(payment, index, e)} value={payment.categoryId} >
+                            <option value="0">Nezařazeno</option>
+                            <option value="1">Jídlo</option>
+                            <option value="2">Oblečení</option>
+                            <option value="3">Cestování</option>
+                            <option value="4">Hygiena</option>
+                            <option value="5">Bydlení</option>
+                        </select>
                     </div>
                     <div className="payment_middle">
                         <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
@@ -141,6 +150,23 @@ export default class MainPage extends Component {
                 </div>
             )
         })
+    }
+
+    async onCatsInputChange(editedPayment, index, e) {
+        editedPayment.categoryId = +e.target.value;
+        await API_Calls.updatePayment(editedPayment);
+
+        let temp = this.state.payments.slice();
+        temp[index] = editedPayment;
+        this.setState({payments: temp});
+
+        temp = this.state.paymentsAll.slice();
+        for(let i = 0; i < temp.length; i++) {
+            if(temp[i].id === editedPayment.id) {
+                temp[i] = editedPayment;
+            }
+        }
+        this.setState({paymentsAll: temp});
     }
 
     handleDateFromChange(e) {

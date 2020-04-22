@@ -56,6 +56,11 @@ let API_Calls = {
         return await API_Calls.call("post", commandUri, payment);
     },
 
+    async updatePayment(payment){
+        let commandUri = this.getUri("paymentItem");
+        return await API_Calls.call("put", commandUri, payment);
+    }
+
 };
 
 export default API_Calls;

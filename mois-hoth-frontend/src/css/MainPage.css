@@ -9,19 +9,16 @@
 .charts {
     display: flex;
     min-width: 600px;
-    width: 100%;
+    width: 80%;
     margin: 0 auto;
 }
 
-.PieChartSelected {
-    width: 33%;
-}LineChartSelected   PieChartAll
- .LineChartSelected {
-     width: 33%;
- }.PieChartAll {
-      width: 33%;
-  }
+.LineChartSelected {
+    margin: 0 auto;
+    width: 80%;
+}
 .payments {
+    border-radius: 5px;
     min-width: 600px;
     width: 60%;
     margin: 0 auto;
@@ -38,6 +35,7 @@
 }
 
 .payment {
+    border-radius: 10px;
     display: flex;
     margin: 15px;
     background: aliceblue;
