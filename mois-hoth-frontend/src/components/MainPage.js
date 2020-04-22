@@ -260,19 +260,26 @@ export default class MainPage extends Component {
 
         let oldestNewestArray = this.getOldestAndNewestPayment(paymentsArr);
         let preparedArrayForLineChart = this.prepareArrayForLineChart(oldestNewestArray[2],oldestNewestArray[0]);
-        console.log(preparedArrayForLineChart);
 
         for (let i=0; i<paymentsArr.length; i++) {
             paymentDueDate = moment(this.changeDate(paymentsArr[i].dueDate)).format( "MM.YYYY");
             for (let j=1; j<preparedArrayForLineChart.length; j++) {
-                console.log("hovnohovno"+ preparedArrayForLineChart[j][0] + "  "+ paymentDueDate);
                 if (preparedArrayForLineChart[j][0]===paymentDueDate){
-                    console.log("hovno");
                     preparedArrayForLineChart[j][(paymentsArr[i].categoryId + 1)] += paymentsArr[i].value.amount;
                 }
             }
         }
-        return preparedArrayForLineChart;
+
+        console.log("a   ");
+        console.log(preparedArrayForLineChart);
+        let emptyCats = this.checkEmptyColumns(preparedArrayForLineChart);
+        console.log("b   ");
+        console.log(emptyCats);
+        console.log("c   ");
+        console.log(this.deleteEmptyColumns(emptyCats, preparedArrayForLineChart));
+        return this.deleteEmptyColumns(emptyCats, preparedArrayForLineChart);
+
+
     }
 
     getOldestAndNewestPayment(paymentsArr) {
@@ -301,8 +308,7 @@ export default class MainPage extends Component {
 
     prepareArrayForLineChart(numberOfMonths, arrayOld) {
         let dataForChart = [];
-        //TODO rename
-        dataForChart.push(["Datum","Nezařezeno","Jídlo","Oblečení","Cestování","Hygiena","Bydlení"]);
+        dataForChart.push(["Datum","Nezařazeno","Jídlo","Oblečení","Cestování","Hygiena","Bydlení"]);
         for (let i = 0; i < numberOfMonths; i++) {
 
             let tmp2 = this.changeDate(arrayOld);
@@ -313,8 +319,61 @@ export default class MainPage extends Component {
 
     changeDate(date) {
         let tmp = date.toString().split(".");
-        let tmp2 = tmp[2]+"."+tmp[1]+"."+tmp[0];
-        return tmp2;
+        return tmp[2] + "." + tmp[1] + "." + tmp[0];
+    }
+
+    checkEmptyColumns(array) {
+        let indexOfEmptyColumn = [];
+        for (let j = 0; j < array[0].length; j++) {
+            if (array[1][j] === 0){
+                let toDeleted = true;
+                for (let i = 2; i < array.length; i++) {
+                    if (array[i][j] !== 0) {
+                        toDeleted = false;
+                    }
+                }
+                if(toDeleted) {
+                    indexOfEmptyColumn.push(j-1);
+                }
+            }
+        }
+
+        for (let i = 0; i < indexOfEmptyColumn.length; i++) {
+            switch (indexOfEmptyColumn[i]) {
+                case 0:
+                    indexOfEmptyColumn[i] = "Nezařazeno";
+                    break;
+                case 1:
+                    indexOfEmptyColumn[i] = "Jídlo";
+                    break;
+                case 2:
+                    indexOfEmptyColumn[i] = "Oblečení";
+                    break;
+                case 3:
+                    indexOfEmptyColumn[i] = "Cestování";
+                    break;
+                case 4:
+                    indexOfEmptyColumn[i] = "Hygiena";
+                    break;
+                case 5:
+                    indexOfEmptyColumn[i] = "Bydlení";
+                    break;
+            }
+        }
+        return indexOfEmptyColumn;
+    }
+
+    deleteEmptyColumns(arrayOfColsToBeDeleted, array2D) {
+        for (let j = 0; j < arrayOfColsToBeDeleted.length; j++) {
+            for (let i = 1; i < array2D[0].length; i++){
+                if (array2D[0][i] === arrayOfColsToBeDeleted[j]) {
+                    for(let k = 0; k < array2D.length; k++) {
+                        array2D[k].splice(i, 1);
+                    }
+                }
+            }
+        }
+        return array2D;
     }
 }
 
