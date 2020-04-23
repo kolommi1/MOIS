@@ -18,7 +18,7 @@ export default class MainPage extends Component {
         // set dateTo to current Day
         dateto = new Date().toISOString().substr(0, 10);
         // set dateFrom to first Day of current Month
-        datefrom = dateto.substr(0, 8)+"01";
+        datefrom = dateto.substr(0, 8) + "01";
 
         this.state = {
             payments: [],
@@ -83,7 +83,8 @@ export default class MainPage extends Component {
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
-                            <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
+                            <div
+                                className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
                             <div className="logout_button"><a href=".">Odhlásit se</a></div>
                         </div>
                     </div>
@@ -95,9 +96,11 @@ export default class MainPage extends Component {
                 <div className="payments">
                     <div className="dates">
                         <label htmlFor="dateFrom">Platby od: </label>
-                        <input type="date" required id="dateFrom" max={this.state.dateTo} name="dateFrom" value={this.state.dateFrom} onChange={this.handleDateFromChange} />
+                        <input type="date" required id="dateFrom" max={this.state.dateTo} name="dateFrom"
+                               value={this.state.dateFrom} onChange={this.handleDateFromChange}/>
                         <label htmlFor="dateTo">do: </label>
-                        <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom} value={this.state.dateTo} onChange={this.handleDateToChange} />
+                        <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom}
+                               value={this.state.dateTo} onChange={this.handleDateToChange}/>
                     </div>
                     {this.renderPaymentData2()}
                 </div>
@@ -111,17 +114,17 @@ export default class MainPage extends Component {
         )
     }
 
-   async onSummitModal(newPayment) {
+    async onSummitModal(newPayment) {
         // new payments are from current logged user
         newPayment.userAccount = this.props.user.userAccount;
 
         let new_Payment = await API_Calls.postPayment(newPayment);
         this.setState({
-           payments: this.state.payments.concat([new_Payment]),
-       });
-       this.setState({
-           paymentsAll: this.state.paymentsAll.concat([new_Payment]),
-       })
+            payments: this.state.payments.concat([new_Payment]),
+        });
+        this.setState({
+            paymentsAll: this.state.paymentsAll.concat([new_Payment]),
+        })
     }
 
 
@@ -130,9 +133,11 @@ export default class MainPage extends Component {
             return (
                 <div className="payment" key={payment.id}>
                     <div className="payment_left">
-                        <div className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
+                        <div
+                            className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
                         <span className="payment_category">Kategorie: </span>
-                        <select id="cats_input" name="cats_input" onChange={(e) => this.onCatsInputChange(payment, index, e)} value={payment.categoryId} >
+                        <select id="cats_input" name="cats_input"
+                                onChange={(e) => this.onCatsInputChange(payment, index, e)} value={payment.categoryId}>
                             <option value="0">Nezařazeno</option>
                             <option value="1">Jídlo</option>
                             <option value="2">Oblečení</option>
@@ -162,8 +167,8 @@ export default class MainPage extends Component {
         this.setState({payments: temp});
 
         temp = this.state.paymentsAll.slice();
-        for(let i = 0; i < temp.length; i++) {
-            if(temp[i].id === editedPayment.id) {
+        for (let i = 0; i < temp.length; i++) {
+            if (temp[i].id === editedPayment.id) {
                 temp[i] = editedPayment;
             }
         }
@@ -172,7 +177,7 @@ export default class MainPage extends Component {
 
     handleDateFromChange(e) {
         const value = e.target.value;
-        this.setState( {dateFrom: value});
+        this.setState({dateFrom: value});
         if (this.state.checkedCategories.length > 0) {
             this.updateTable(value, this.state.dateTo, this.state.checkedCategories);
         } else {
@@ -182,7 +187,7 @@ export default class MainPage extends Component {
 
     handleDateToChange(e) {
         const value = e.target.value;
-        this.setState( {dateTo: value});
+        this.setState({dateTo: value});
         if (this.state.checkedCategories.length > 0) {
             this.updateTable(this.state.dateFrom, value, this.state.checkedCategories);
         } else {
@@ -257,62 +262,102 @@ export default class MainPage extends Component {
         //receive disp. data
         let paymentsArr = this.state.payments;
         let paymentDueDate;
-
+        let dateHelp
         let oldestNewestArray = this.getOldestAndNewestPayment(paymentsArr);
-        let preparedArrayForLineChart = this.prepareArrayForLineChart(oldestNewestArray[2],oldestNewestArray[0]);
+        let preparedArrayForLineChart = this.prepareArrayForLineChart(oldestNewestArray[2], oldestNewestArray[0]);
 
-        for (let i=0; i<paymentsArr.length; i++) {
-            paymentDueDate = moment(this.changeDate(paymentsArr[i].dueDate)).format( "MM.YYYY");
-            for (let j=1; j<preparedArrayForLineChart.length; j++) {
-                if (preparedArrayForLineChart[j][0]===paymentDueDate){
-                    preparedArrayForLineChart[j][(paymentsArr[i].categoryId + 1)] += paymentsArr[i].value.amount;
+        for (let i = 0; i < paymentsArr.length; i++) {
+            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+                let paymentDueDateSplit = paymentsArr[i].dueDate.split(".");
+                dateHelp = new Date(Number.parseInt(paymentDueDateSplit[2]), Number.parseInt(paymentDueDateSplit[1]) - 1, 1, 0, 0, 0, 0);
+            } else {
+                paymentDueDate = moment(this.changeDate(paymentsArr[i].dueDate)).format("MM.YYYY");
+            }
+            for (let j = 1; j < preparedArrayForLineChart.length; j++) {
+                if (navigator.userAgent.indexOf("Firefox") !== -1) {
+                    if (preparedArrayForLineChart[j][0].valueOf() === dateHelp.valueOf()) {
+                        preparedArrayForLineChart[j][(paymentsArr[i].categoryId + 1)] += paymentsArr[i].value.amount;
+                    }
+                } else {
+                    if (preparedArrayForLineChart[j][0] === paymentDueDate) {
+                        preparedArrayForLineChart[j][(paymentsArr[i].categoryId + 1)] += paymentsArr[i].value.amount;
+                    }
                 }
             }
         }
 
-        console.log("a   ");
-        console.log(preparedArrayForLineChart);
         let emptyCats = this.checkEmptyColumns(preparedArrayForLineChart);
-        console.log("b   ");
-        console.log(emptyCats);
-        console.log("c   ");
-        console.log(this.deleteEmptyColumns(emptyCats, preparedArrayForLineChart));
         return this.deleteEmptyColumns(emptyCats, preparedArrayForLineChart);
-
-
     }
 
     getOldestAndNewestPayment(paymentsArr) {
         let newestDate;
         let oldestDate;
-        if (paymentsArr.length > 0) {
-            oldestDate = moment(this.changeDate(paymentsArr[0].dueDate));
-            newestDate = moment(this.changeDate(paymentsArr[0].dueDate));
-        } else {
-            oldestDate = moment();
-            newestDate = moment();
-        }
 
+        if (paymentsArr.length > 0) {
+            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+                let dateSplit = paymentsArr[0].dueDate.split(".");
+                oldestDate = new Date(parseInt(dateSplit[2]), (dateSplit[1] - 1) % 12, parseInt(dateSplit[0]));
+                newestDate = new Date(parseInt(dateSplit[2]), (dateSplit[1] - 1) % 12, parseInt(dateSplit[0]));
+            } else {
+                oldestDate = moment(this.changeDate(paymentsArr[0].dueDate));
+                newestDate = moment(this.changeDate(paymentsArr[0].dueDate));
+            }
+        } else {
+            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+                oldestDate = new Date();
+                newestDate = new Date();
+            } else {
+                oldestDate = moment();
+                newestDate = moment();
+            }
+        }
         let differenceMonth;
         for (let i = 0; i < paymentsArr.length; i++) {
-            if (oldestDate >= moment(this.changeDate(paymentsArr[i].dueDate))) {
-                oldestDate = moment(this.changeDate(paymentsArr[i].dueDate));
-            }
-            if (newestDate <= moment(this.changeDate(paymentsArr[i].dueDate))) {
-                newestDate =  moment(this.changeDate(paymentsArr[i].dueDate));
+
+            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+                let payDateSplit = paymentsArr[i].dueDate.split(".");
+                let payDate = new Date(parseInt(payDateSplit[2]), (payDateSplit[1] - 1) % 12, parseInt(payDateSplit[0]));
+
+                if (oldestDate >= payDate) {
+                    oldestDate = payDate;
+                }
+                if (newestDate <= payDate) {
+                    newestDate = payDate;
+                }
+            } else {
+                if (oldestDate >= moment(this.changeDate(paymentsArr[i].dueDate))) {
+                    oldestDate = moment(this.changeDate(paymentsArr[i].dueDate));
+                }
+                if (newestDate <= moment(this.changeDate(paymentsArr[i].dueDate))) {
+                    newestDate = moment(this.changeDate(paymentsArr[i].dueDate));
+                }
             }
         }
-        differenceMonth = newestDate.diff(oldestDate, 'months', false);
-        return [oldestDate.format("DD.MM.YYYY"), newestDate.format("DD.MM.YYYY"), differenceMonth+1];
+        if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            differenceMonth = moment(newestDate).diff(moment(oldestDate), 'months', false);
+            return [moment(oldestDate).format("DD.MM.YYYY"), moment(newestDate).format("DD.MM.YYYY"), differenceMonth + 1];
+        } else {
+            differenceMonth = newestDate.diff(oldestDate, 'months', false);
+            return [oldestDate.format("DD.MM.YYYY"), newestDate.format("DD.MM.YYYY"), differenceMonth + 1];
+        }
     }
 
     prepareArrayForLineChart(numberOfMonths, arrayOld) {
         let dataForChart = [];
-        dataForChart.push(["Datum","Nezařazeno","Jídlo","Oblečení","Cestování","Hygiena","Bydlení"]);
-        for (let i = 0; i < numberOfMonths; i++) {
+        let tmp2 = this.changeDate(arrayOld);
+        let month = Number.parseInt(tmp2.split(".")[1]);
+        let year = Number.parseInt(tmp2.split(".")[0]);
 
-            let tmp2 = this.changeDate(arrayOld);
-            dataForChart.push([moment(tmp2).add(i, "month").format("MM.YYYY"),0,0,0,0,0,0]);
+        dataForChart.push(["Datum", "Nezařazeno", "Jídlo", "Oblečení", "Cestování", "Hygiena", "Bydlení"]);
+        for (let i = 0; i < numberOfMonths; i++) {
+            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+                let dateHelp = new Date(year, month - 1, 1, 0, 0, 0, 0);
+                dataForChart.push([dateHelp, 0, 0, 0, 0, 0, 0]);
+                month += 1;
+            } else {
+                dataForChart.push([moment(tmp2).add(i, "month").format("MM.YYYY"), 0, 0, 0, 0, 0, 0]);
+            }
         }
         return dataForChart;
     }
@@ -325,15 +370,15 @@ export default class MainPage extends Component {
     checkEmptyColumns(array) {
         let indexOfEmptyColumn = [];
         for (let j = 0; j < array[0].length; j++) {
-            if (array[1][j] === 0){
+            if (array[1][j] === 0) {
                 let toDeleted = true;
                 for (let i = 2; i < array.length; i++) {
                     if (array[i][j] !== 0) {
                         toDeleted = false;
                     }
                 }
-                if(toDeleted) {
-                    indexOfEmptyColumn.push(j-1);
+                if (toDeleted) {
+                    indexOfEmptyColumn.push(j - 1);
                 }
             }
         }
@@ -360,18 +405,14 @@ export default class MainPage extends Component {
                     break;
             }
         }
-
         return indexOfEmptyColumn;
     }
 
     deleteEmptyColumns(arrayOfColsToBeDeleted, array2D) {
         for (let j = 0; j < arrayOfColsToBeDeleted.length; j++) {
-
-            for (let i = 1; i < array2D[0].length; i++){
-
+            for (let i = 1; i < array2D[0].length; i++) {
                 if (array2D[0][i] === arrayOfColsToBeDeleted[j]) {
-
-                    for(let k = 0; k < array2D.length; k++) {
+                    for (let k = 0; k < array2D.length; k++) {
                         array2D[k].splice(i, 1);
                     }
                 }
