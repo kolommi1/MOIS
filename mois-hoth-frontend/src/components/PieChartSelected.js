@@ -16,7 +16,7 @@ class PieChartSelected extends Component {
     render() {
         return (
             <div className="PieChartSelected">
-                <div style={{display: 'flex', maxWidth: 900}}>
+                <div style={{display: 'block', margin: '0 auto', maxWidth: 700}}>
                     <Chart
                         width={'600px'}
                         height={'400px'}
@@ -35,6 +35,8 @@ class PieChartSelected extends Component {
 
                         options={{
                             title: 'Přehled vybraných kategorií',
+                            chartArea: {width: '100%', height: '70%'},
+                            legend: {position: 'top', alignment: 'center'}
                         }}
                         rootProps={{'data-testid': '1'}}
                     />

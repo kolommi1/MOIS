@@ -43,18 +43,26 @@
 }
 
 .payment_left {
-    flex-basis: 40%;
+    flex-basis: 30%;
     text-align: left;
+    padding: 15px;
+    margin: auto 0;
 }
 
 .payment_middle {
-    flex-basis: 40%;
+    flex-basis: 50%;
+    text-align: left;
+    border-left: 1px solid royalblue;
+    border-right: 1px solid royalblue;
+    padding: 15px;
+    margin: 5px;
 }
 
 .payment_right {
     text-align: right;
     flex-basis: 20%;
     margin: auto 0;
+    padding: 15px;
 }
 
 .userLogo{
@@ -64,8 +72,11 @@
     vertical-align: middle;
 }
 
-.divider {
-    clear: both;
+hr.divider {
+    border-top: 3px solid #bbb;
+    width: 90%;
+    text-align: center;
+    margin: 50px auto;
 }
 .userPanel {
     display: flex;
@@ -107,42 +118,45 @@
     color: white;
 }
 
-.Table {
-    margin: 0 auto;
-    text-align: center;
-    border-collapse: collapse;
-    border: 3px solid #ddd;
-    width: 60%;
-}
-
-.Table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: center;
-    background-color: royalblue;
-    color: white;
-}
-
-.Table td, .Table th {
-    border: 1px solid white;
-    padding: 8px;
-}
-
-.Table tr{background-color: lightskyblue;}
-
-.Table tr:hover {background-color: steelblue;}
 
 @media (max-width: 640px) {
 
+    .charts {
+        flex-direction: column;
+        width: 100%;
+    }
+
     .payments {
         width: 100%;
-        min-width: 0px;
+        min-width: 0;
     }
     .payment {
         flex-direction: column;
     }
 
-    .payment_left, .payment_right {
+    .payment_left, .payment_middle, .payment_right {
         text-align: center;
+    }
+
+    .payment_left {
+        border-bottom: 1px solid royalblue;
+    }
+
+    .payment_right {
+        border-top: 1px solid royalblue;
+    }
+
+    .payment_middle {
+        border-left: 0;
+        border-right: 0;
+    }
+
+}
+
+@media (max-width: 1280px) {
+
+    .payments {
+        width: 80%;
+        min-width: 0;
     }
 }

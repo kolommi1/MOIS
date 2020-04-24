@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import API_Calls from "../js/apiCalls";
-import logo from "../logo.svg";
+import logo from "../img/logo.png";
 import Categories from "./Categories";
 import '../css/MainPage.css';
 import Modal from "./Modal";
@@ -104,7 +104,7 @@ export default class MainPage extends Component {
                     </div>
                     {this.renderPaymentData2()}
                 </div>
-
+                <hr className="divider"/>
                 <div className="charts">
                     <PieChartAll categorySummaryAll={this.getCategorySummaryAll()}/>
                     <PieChartSelected categorySummarySelected={this.getCategorySummarySelected()}/>
@@ -148,7 +148,7 @@ export default class MainPage extends Component {
                     </div>
                     <div className="payment_middle">
                         <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
-                        <div className="payment_date">Termín splatnosti: {payment.dueDate}</div>
+                        <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
                     </div>
                     <div className="payment_right">
                         <div className="payment_amount">{payment.value.amount} Kč</div>
