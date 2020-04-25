@@ -178,9 +178,9 @@ export default class MainPage extends Component {
 
     renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
         if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
-            return <div className="payment_amount"> {Number.parseInt(amount*rate+" "+requestedCurrency).toFixed(2)}</div>
+            return <div className="payment_amount"> {Number.parseInt(amount*rate).toFixed(2)+" "+requestedCurrency}</div>
         } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
-            return <div className="payment_amount"> {Number.parseInt(amount/rate+" "+requestedCurrency).toFixed(2)}</div>
+            return <div className="payment_amount"> {Number.parseInt(amount/rate).toFixed(2)+" "+requestedCurrency} </div>
         } else {
             return <div className="payment_amount"> {amount+" CZK"}</div>
         }
