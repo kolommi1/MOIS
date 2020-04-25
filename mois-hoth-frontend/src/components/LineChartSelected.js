@@ -30,7 +30,6 @@ class LineChartSelected extends Component {
                             title: 'Přehled výdajů kategorií v čase',
                             chartArea: {width: '100%', height: '70%'},
                             legend: {position: 'top', alignment: 'center'}
-
                         }}
                         rootProps={{ 'data-testid': '2' }}
                     />
