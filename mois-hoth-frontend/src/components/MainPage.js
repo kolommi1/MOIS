@@ -7,9 +7,11 @@ import Modal from "./Modal";
 import PieChartSelected from "./PieChartSelected";
 import PieChartAll from "./PieChartAll";
 import LineChartSelected from "./LineChartSelected";
+import ReactPaginate from 'react-paginate';
 import moment from "moment";
 
 export default class MainPage extends Component {
+
 
     constructor(props) {
         super(props);
@@ -23,10 +25,13 @@ export default class MainPage extends Component {
         this.state = {
             payments: [],
             paymentsAll: [],
+            currentPagePayments: [],
             currencyRate: [],
             checkedCategories: "",
             dateTo: dateto,
-            dateFrom: datefrom
+            dateFrom: datefrom,
+            pageSize: 5,
+            currentPage: 0,
         };
         this.handleCategories = this.handleCategories.bind(this);
         this.onSummitModal = this.onSummitModal.bind(this);
@@ -50,7 +55,7 @@ export default class MainPage extends Component {
     async updateTable(dateFrom, dateTo, categoryIds) {
         try {
             let result = await API_Calls.getPaymentsByDateByCategoryByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user, categoryIds);
-            this.setState({payments: result});
+            this.updateData(result);
         } catch (error) {
             this.setState({error: error});
         }
@@ -61,7 +66,7 @@ export default class MainPage extends Component {
             let result = await API_Calls.getPaymentsByDateByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user);
             let resultAll = await API_Calls.getPaymentsByUser(this.props.user.userAccount.accountNumber_user);
             //let currRate = await API_Calls.getCurrencyRate("CZK", "EUR");
-            this.setState({payments: result});
+            this.updateData(result);
             this.setState({paymentsAll: resultAll});
             //this.setState({currencyRate: currRate});
         } catch (error) {
@@ -72,7 +77,7 @@ export default class MainPage extends Component {
     async updateTableNoCategory(dateFrom, dateTo) {
         try {
             let result = await API_Calls.getPaymentsByDateByUser(dateFrom, dateTo, this.props.user.userAccount.accountNumber_user);
-            this.setState({payments: result});
+            this.updateData(result);
         } catch (error) {
             this.setState({error: error});
         }
@@ -112,6 +117,15 @@ export default class MainPage extends Component {
                         </select>
                     </div>
                     {this.renderPaymentData2()}
+
+                </div>
+                <hr className="divider"/>
+                <div className="overview">
+                    <span className="overviewValues">
+                        <div className="overviewDetail">Počet plateb: {this.state.payments.length}</div>
+                        <div className="overviewDetail">Suma: {this.calculatePaymentSum()} Kč</div>
+                        <div className="overviewDetail">Interval: od {this.state.dateFrom} do {this.state.dateTo}</div>
+                    </span>
                 </div>
                 <hr className="divider"/>
                 <div className="charts">
@@ -128,43 +142,26 @@ export default class MainPage extends Component {
         newPayment.userAccount = this.props.user.userAccount;
 
         let new_Payment = await API_Calls.postPayment(newPayment);
-        this.setState({
-            payments: this.state.payments.concat([new_Payment]),
-        });
+
+        this.updateData(this.state.payments.concat([new_Payment]));
         this.setState({
             paymentsAll: this.state.paymentsAll.concat([new_Payment]),
         })
     }
 
     renderPaymentData2() {
-        return this.state.payments.map((payment, index) => {
-            return (
-                <div className="payment" key={payment.id}>
-                    <div className="payment_left">
-                        <div
-                            className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
-                        <span className="payment_category">Kategorie: </span>
-                        <select id="cats_input" name="cats_input"
-                                onChange={(e) => this.onCatsInputChange(payment, index, e)} value={payment.categoryId}>
-                            <option value="0">Nezařazeno</option>
-                            <option value="1">Jídlo</option>
-                            <option value="2">Oblečení</option>
-                            <option value="3">Cestování</option>
-                            <option value="4">Hygiena</option>
-                            <option value="5">Bydlení</option>
-                        </select>
-                    </div>
-                    <div className="payment_middle">
-                        <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
-                        <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
-                    </div>
-                    <div className="payment_right">
-                        {<div className="payment_amount">{payment.value.amount} Kč</div>}
-                        {/*{this.renderPaymentAmount(payment.value.amount, payment.value.currency,"EUR")}*/}
-                    </div>
-                </div>
-            )
-        })
+        let paginationElement;
+        if (this.state.pageCount > 1) {
+            paginationElement = (
+                <ReactPaginate pageCount={this.state.pageCount} previousLabel={"← Předchozí"} nextLabel={"Následující →"}
+                               breakLabel={<span className="gap">...</span>}
+                               onPageChange={this.handlePageClick} forcePage={this.state.currentPage} containerClassName={"pagination"}
+                               previousLinkClassName={"previous_page"} nextLinkClassName={"next_page"} disabledClassName={"disabled"} activeClassName={"active"} initialPage={this.state.currentPage}/>)
+        }
+        return (<div>
+            {this.state.currentPagePayments}
+            {paginationElement}
+        </div>)
     }
 
     renderPaymentAmount(amount, currentCurrency, requestedCurrency) {
@@ -191,7 +188,7 @@ export default class MainPage extends Component {
 
         let temp = this.state.payments.slice();
         temp[index] = editedPayment;
-        this.setState({payments: temp});
+        this.updateData(temp);
 
         temp = this.state.paymentsAll.slice();
         for (let i = 0; i < temp.length; i++) {
@@ -200,6 +197,61 @@ export default class MainPage extends Component {
             }
         }
         this.setState({paymentsAll: temp});
+    }
+
+    updateData(payments) {
+        this.setState({payments: payments, pageCount: Math.ceil(payments.length / this.state.pageSize)}, () => this.setElementsForCurrentPage());
+    }
+
+    calculatePaymentSum() {
+        let sum = 0.0;
+        this.state.payments.forEach((payment)=> {
+            sum += payment.value.amount;
+        });
+        return (sum);
+    }
+
+    setElementsForCurrentPage() {
+        let sliceFrom = this.state.currentPage == 0 ? 0 : this.state.currentPage * this.state.pageSize;
+        let sliceTo = this.state.currentPage == 0 ? (this.state.pageSize) : (this.state.currentPage * this.state.pageSize) + this.state.pageSize;
+        let elements = this.state.payments
+            .slice(sliceFrom, sliceTo)
+            .map((payment, index) => {
+                return (
+                    <div className="payment" key={payment.id}>
+                        <div className="payment_left">
+                            <div
+                                className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
+                            <span className="payment_category">Kategorie: </span>
+                            <select id="cats_input" name="cats_input"
+                                    onChange={(e) => this.onCatsInputChange(payment, index, e)} value={payment.categoryId}>
+                                <option value="0">Nezařazeno</option>
+                                <option value="1">Jídlo</option>
+                                <option value="2">Oblečení</option>
+                                <option value="3">Cestování</option>
+                                <option value="4">Hygiena</option>
+                                <option value="5">Bydlení</option>
+                            </select>
+                        </div>
+                        <div className="payment_middle">
+                            <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
+                            <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
+                        </div>
+                        <div className="payment_right">
+                            {<div className="payment_amount">{payment.value.amount} Kč</div>}
+                            {/*{this.renderPaymentAmount(payment.value.amount, payment.value.currency,"EUR")}*/}
+                        </div>
+                    </div>
+                )
+            });
+        this.setState({ currentPagePayments: elements });
+    }
+
+    handlePageClick = (data) => {
+        this.setState({ currentPage: data.selected}, () => {
+            this.setElementsForCurrentPage();
+            this.render();
+        });
     }
 
     handleDateFromChange(e) {

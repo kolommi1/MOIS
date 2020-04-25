@@ -16,6 +16,7 @@
     "react-dom": "^16.13.0",
     "react-facebook-login": "^4.1.1",
     "react-google-charts": "^3.0.15",
+    "react-paginate": "^6.3.2",
     "react-scripts": "3.4.0"
   },
   "scripts": {
