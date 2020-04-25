@@ -11,19 +11,14 @@ body {
 }
 
 .App-logo {
-  height: 20vmin;
+  height: 150px;
+  width: 300px;
   pointer-events: none;
 }
 
 .App-header {
   background-color: #282c34;
   color: white;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
 }
 
 .tabs-menu {
