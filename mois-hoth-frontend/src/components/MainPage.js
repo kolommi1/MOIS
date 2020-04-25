@@ -124,8 +124,9 @@ export default class MainPage extends Component {
                 <div className="charts">
                     <PieChartAll categorySummaryAll={this.getCategorySummaryAll()}/>
                     <PieChartSelected categorySummarySelected={this.getCategorySummarySelected()}/>
+                    <LineChartSelected lineChartData={this.getDataForLineChart()}/>
                 </div>
-                <LineChartSelected lineChartData={this.getDataForLineChart()}/>
+
             </div>
         )
     }
@@ -437,6 +438,9 @@ export default class MainPage extends Component {
                     break;
                 case 5:
                     indexOfEmptyColumn[i] = "Bydlení";
+                    break;
+                default:
+                    indexOfEmptyColumn[i] = "Nezařazeno";
                     break;
             }
         }

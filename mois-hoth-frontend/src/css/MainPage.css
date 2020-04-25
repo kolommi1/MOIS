@@ -11,12 +11,19 @@
     min-width: 600px;
     width: 80%;
     margin: 0 auto;
+    flex-wrap: wrap;
 }
 
 .LineChartSelected {
     margin: 0 auto;
     width: 80%;
+    flex-basis: 100%;
 }
+
+.PieChartSelected, .PieChartAll{
+    flex-basis: 50%;
+}
+
 .payments {
     border-radius: 5px;
     min-width: 600px;

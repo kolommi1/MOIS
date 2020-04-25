@@ -150,8 +150,8 @@ class Modal extends Component {
                 </div>
 
                 <div className="text-center">
-                    <a href="" className="btn btn-default btn-rounded mb-4" data-toggle="modal"
-                       data-target="#modalRegisterForm">Nová platba</a>
+                    <button className="btn btn-default btn-rounded mb-4" data-toggle="modal"
+                       data-target="#modalRegisterForm">Nová platba</button>
                 </div>
             </div>
         );
