@@ -23,6 +23,7 @@ export default class MainPage extends Component {
         this.state = {
             payments: [],
             paymentsAll: [],
+            currencyRate: [],
             checkedCategories: "",
             dateTo: dateto,
             dateFrom: datefrom
@@ -59,8 +60,10 @@ export default class MainPage extends Component {
         try {
             let result = await API_Calls.getPaymentsByDateByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user);
             let resultAll = await API_Calls.getPaymentsByUser(this.props.user.userAccount.accountNumber_user);
+            //let currRate = await API_Calls.getCurrencyRate("CZK", "EUR");
             this.setState({payments: result});
             this.setState({paymentsAll: resultAll});
+            //this.setState({currencyRate: currRate});
         } catch (error) {
             this.setState({error: error});
         }
@@ -101,6 +104,12 @@ export default class MainPage extends Component {
                         <label htmlFor="dateTo">do: </label>
                         <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom}
                                value={this.state.dateTo} onChange={this.handleDateToChange}/>
+                        <label htmlFor="currency">Měna: </label>
+                        <select id="currency_input" name="currency_input">
+                            <option value="0">CZK</option>
+                            <option value="1">EUR</option>
+                            <option value="2">Nespecifikováno</option>
+                        </select>
                     </div>
                     {this.renderPaymentData2()}
                 </div>
@@ -127,7 +136,6 @@ export default class MainPage extends Component {
         })
     }
 
-
     renderPaymentData2() {
         return this.state.payments.map((payment, index) => {
             return (
@@ -151,12 +159,35 @@ export default class MainPage extends Component {
                         <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
                     </div>
                     <div className="payment_right">
-                        <div className="payment_amount">{payment.value.amount} Kč</div>
+                        {<div className="payment_amount">{payment.value.amount} Kč</div>}
+                        {/*{this.renderPaymentAmount(payment.value.amount, payment.value.currency,"EUR")}*/}
                     </div>
                 </div>
             )
         })
     }
+
+    renderPaymentAmount(amount, currentCurrency, requestedCurrency) {
+
+        if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
+            return this.state.currencyRate.map((currRate, index) => {
+                return (
+                    <div className="payment_amount"> {amount*(currRate.rates.CZK)+" "+requestedCurrency}</div>
+                )
+            })
+        } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
+            console.log(this.state.currencyRate);
+
+            return this.state.currencyRate.map((currRate, index) => {
+                return (
+                    <div className="payment_amount"> {amount*(currRate.rates.CZK)+" "+requestedCurrency}</div>
+                )
+            })
+        } else {
+            return <div className="payment_amount"> {amount}</div>
+        }
+    }
+
 
     async onCatsInputChange(editedPayment, index, e) {
         editedPayment.categoryId = +e.target.value;

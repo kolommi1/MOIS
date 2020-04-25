@@ -1,3 +1,6 @@
+
+
+
 let API_Calls = {
 
     async call(method, url, dtoIn, headers) {
@@ -45,9 +48,7 @@ let API_Calls = {
     },
 
     async getPaymentsByDateByCategoryByUser(from, to, accountNumber, categoryIds, dtoIn) {
-        console.log(categoryIds);
         let commandUri = this.getUri("paymentListByDateUserCategory/" + from + "/" + to + "/" + accountNumber + "/" + categoryIds);
-        console.log(commandUri);
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 
@@ -59,8 +60,15 @@ let API_Calls = {
     async updatePayment(payment){
         let commandUri = this.getUri("paymentItem");
         return await API_Calls.call("put", commandUri, payment);
-    }
+    },
 
+    async getCurrencyRate(baseCurrency, requestedCurrency, dtoIn){
+        return await API_Calls.call("get",
+            "https://api.exchangeratesapi.io/latest?symbols="+requestedCurrency+"&base="+baseCurrency,
+            dtoIn);
+/*        return await API_Calls.call("get",
+            "http://data.fixer.io/api/latest?access_key=f8b5504f1235a75a4b50a6ab2c986fb1",dtoIn);*/
+    }
 };
 
 export default API_Calls;
