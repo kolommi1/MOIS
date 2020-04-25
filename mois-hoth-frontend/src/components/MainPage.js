@@ -168,7 +168,6 @@ export default class MainPage extends Component {
     }
 
     renderPaymentAmount(amount, currentCurrency, requestedCurrency) {
-
         if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
             return this.state.currencyRate.map((currRate, index) => {
                 return (
@@ -176,8 +175,6 @@ export default class MainPage extends Component {
                 )
             })
         } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
-            console.log(this.state.currencyRate);
-
             return this.state.currencyRate.map((currRate, index) => {
                 return (
                     <div className="payment_amount"> {amount*(currRate.rates.CZK)+" "+requestedCurrency}</div>
@@ -187,7 +184,6 @@ export default class MainPage extends Component {
             return <div className="payment_amount"> {amount}</div>
         }
     }
-
 
     async onCatsInputChange(editedPayment, index, e) {
         editedPayment.categoryId = +e.target.value;
@@ -298,14 +294,14 @@ export default class MainPage extends Component {
         let preparedArrayForLineChart = this.prepareArrayForLineChart(oldestNewestArray[2], oldestNewestArray[0]);
 
         for (let i = 0; i < paymentsArr.length; i++) {
-            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
                 let paymentDueDateSplit = paymentsArr[i].dueDate.split(".");
                 dateHelp = new Date(Number.parseInt(paymentDueDateSplit[2]), Number.parseInt(paymentDueDateSplit[1]) - 1, 1, 0, 0, 0, 0);
             } else {
                 paymentDueDate = moment(this.changeDate(paymentsArr[i].dueDate)).format("MM.YYYY");
             }
             for (let j = 1; j < preparedArrayForLineChart.length; j++) {
-                if (navigator.userAgent.indexOf("Firefox") !== -1) {
+                if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
                     if (preparedArrayForLineChart[j][0].valueOf() === dateHelp.valueOf()) {
                         preparedArrayForLineChart[j][(paymentsArr[i].categoryId + 1)] += paymentsArr[i].value.amount;
                     }
@@ -326,7 +322,7 @@ export default class MainPage extends Component {
         let oldestDate;
 
         if (paymentsArr.length > 0) {
-            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
                 let dateSplit = paymentsArr[0].dueDate.split(".");
                 oldestDate = new Date(parseInt(dateSplit[2]), (dateSplit[1] - 1) % 12, parseInt(dateSplit[0]));
                 newestDate = new Date(parseInt(dateSplit[2]), (dateSplit[1] - 1) % 12, parseInt(dateSplit[0]));
@@ -346,7 +342,7 @@ export default class MainPage extends Component {
         let differenceMonth;
         for (let i = 0; i < paymentsArr.length; i++) {
 
-            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
                 let payDateSplit = paymentsArr[i].dueDate.split(".");
                 let payDate = new Date(parseInt(payDateSplit[2]), (payDateSplit[1] - 1) % 12, parseInt(payDateSplit[0]));
 
@@ -365,7 +361,7 @@ export default class MainPage extends Component {
                 }
             }
         }
-        if (navigator.userAgent.indexOf("Firefox") !== -1) {
+        if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
             differenceMonth = moment(newestDate).diff(moment(oldestDate), 'months', false);
             return [moment(oldestDate).format("DD.MM.YYYY"), moment(newestDate).format("DD.MM.YYYY"), differenceMonth + 1];
         } else {
@@ -382,7 +378,7 @@ export default class MainPage extends Component {
 
         dataForChart.push(["Datum", "Nezařazeno", "Jídlo", "Oblečení", "Cestování", "Hygiena", "Bydlení"]);
         for (let i = 0; i < numberOfMonths; i++) {
-            if (navigator.userAgent.indexOf("Firefox") !== -1) {
+            if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
                 let dateHelp = new Date(year, month - 1, 1, 0, 0, 0, 0);
                 dataForChart.push([dateHelp, 0, 0, 0, 0, 0, 0]);
                 month += 1;
