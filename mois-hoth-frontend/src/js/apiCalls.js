@@ -1,6 +1,3 @@
-
-
-
 let API_Calls = {
 
     async call(method, url, dtoIn, headers) {
@@ -12,13 +9,15 @@ let API_Calls = {
         let response = await fetch(url, {
             method: method,
             body: body,
+            credentials: 'include', //same-origin
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
                 "Accept": "application/json"
-            },
+            }
         });
-        let resp = await response.json();
-        return resp;
+
+        if (!response.ok) throw new Error(await response.text());
+        return await response.json();
     },
 
     getUri: function (useCase) {
@@ -37,12 +36,17 @@ let API_Calls = {
         return await API_Calls.call("get", commandUri, dtoIn);
     },
 
-    async userAuthenticate(email, password, dtoIn) {
-        let commandUri = this.getUri("userAuthenticate/" + email + "/" + password);
-        return await API_Calls.call("get", commandUri, dtoIn);
+    async userAuthenticate(mail, password) {
+        let commandUri = this.getUri("auth/login");
+        return await API_Calls.call("post", commandUri, {mail, password});
     },
 
-    async getPaymentsByDateByUser(from, to, accountNumber , dtoIn) {
+    async getCurrentUser() {
+        let commandUri = this.getUri("auth/currentUser");
+        return await API_Calls.call("post", commandUri);
+    },
+
+    async getPaymentsByDateByUser(from, to, accountNumber, dtoIn) {
         let commandUri = this.getUri("paymentListByDateUser/" + from + "/" + to + "/" + accountNumber);
         return await API_Calls.call("get", commandUri, dtoIn);
     },
@@ -57,7 +61,7 @@ let API_Calls = {
         return await API_Calls.call("post", commandUri, payment);
     },
 
-    async updatePayment(payment){
+    async updatePayment(payment) {
         let commandUri = this.getUri("paymentItem");
         return await API_Calls.call("put", commandUri, payment);
     },

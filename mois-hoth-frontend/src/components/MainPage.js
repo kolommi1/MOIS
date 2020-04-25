@@ -86,9 +86,8 @@ export default class MainPage extends Component {
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
-                            <div
-                                className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
-                            <div className="logout_button"><a href=".">Odhlásit se</a></div>
+                            <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
+                            <div className="logout_button btn btn-sm btn-link p-0" onClick={this.props.onLogout}>Odhlásit se</div>
                         </div>
                     </div>
                     <Categories onCheckedCategoryChanged={this.handleCategories}/>
@@ -135,6 +134,7 @@ export default class MainPage extends Component {
             paymentsAll: this.state.paymentsAll.concat([new_Payment]),
         })
     }
+
 
     renderPaymentData2() {
         return this.state.payments.map((payment, index) => {
@@ -315,6 +315,8 @@ export default class MainPage extends Component {
 
         let emptyCats = this.checkEmptyColumns(preparedArrayForLineChart);
         return this.deleteEmptyColumns(emptyCats, preparedArrayForLineChart);
+
+
     }
 
     getOldestAndNewestPayment(paymentsArr) {
@@ -339,6 +341,7 @@ export default class MainPage extends Component {
                 newestDate = moment();
             }
         }
+
         let differenceMonth;
         for (let i = 0; i < paymentsArr.length; i++) {
 
@@ -432,6 +435,7 @@ export default class MainPage extends Component {
                     break;
             }
         }
+
         return indexOfEmptyColumn;
     }
 
