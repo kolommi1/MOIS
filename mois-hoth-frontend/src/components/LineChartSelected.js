@@ -13,7 +13,7 @@ class LineChartSelected extends Component {
     render() {
         return (
             <div className="LineChartSelected">
-                <div style={{display: 'flex', maxWidth: 1200}}>
+                <div style={{display: 'block', margin: '0 auto', maxWidth: 1200}}>
                     <Chart
                         width={'1200px'}
                         height={'400px'}
@@ -26,7 +26,10 @@ class LineChartSelected extends Component {
                             },
                             vAxis: {
                                 title: 'Částka',
-                            }
+                            },
+                            title: 'Přehled výdajů kategorií v čase',
+                            chartArea: {width: '100%', height: '70%'},
+                            legend: {position: 'top', alignment: 'center'}
                         }}
                         rootProps={{ 'data-testid': '2' }}
                     />
