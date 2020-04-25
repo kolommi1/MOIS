@@ -64,6 +64,14 @@ export default class MainPage extends Component {
             this.setState({payments: result});
             this.setState({paymentsAll: resultAll});
             //this.setState({currencyRate: currRate});
+
+            fetch('http://data.fixer.io/api/latest?access_key=f8b5504f1235a75a4b50a6ab2c986fb1')
+                .then(res => res.json())
+                .then((data) => {
+                    this.setState({ currencyRate: data.rates})
+                })
+                .catch(console.log)
+
         } catch (error) {
             this.setState({error: error});
         }
@@ -105,10 +113,10 @@ export default class MainPage extends Component {
                         <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom}
                                value={this.state.dateTo} onChange={this.handleDateToChange}/>
                         <label htmlFor="currency">Měna: </label>
-                        <select id="currency_input" name="currency_input">
-                            <option value="0">CZK</option>
-                            <option value="1">EUR</option>
-                            <option value="2">Nespecifikováno</option>
+                        <select id="currency_input" name="currency_input" onChange={(val) => this.onCurrencyChange(val.target.value)}>
+                            <option value="CZK">CZK</option>
+                            <option value="EUR">EUR</option>
+                            <option value="NON">Nespecifikováno</option>
                         </select>
                     </div>
                     {this.renderPaymentData2()}
@@ -145,7 +153,8 @@ export default class MainPage extends Component {
                             className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
                         <span className="payment_category">Kategorie: </span>
                         <select id="cats_input" name="cats_input"
-                                onChange={(e) => this.onCatsInputChange(payment, index, e)} value={payment.categoryId}>
+                                onChange={(e) =>
+                                    this.onCatsInputChange(payment, index, e)} value={payment.categoryId}>
                             <option value="0">Nezařazeno</option>
                             <option value="1">Jídlo</option>
                             <option value="2">Oblečení</option>
@@ -159,29 +168,21 @@ export default class MainPage extends Component {
                         <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
                     </div>
                     <div className="payment_right">
-                        {<div className="payment_amount">{payment.value.amount} Kč</div>}
-                        {/*{this.renderPaymentAmount(payment.value.amount, payment.value.currency,"EUR")}*/}
+                        {this.renderPaymentAmount(payment.value.amount, payment.value.currency,"CZK",
+                            this.state.currencyRate.CZK)}
                     </div>
                 </div>
             )
         })
     }
 
-    renderPaymentAmount(amount, currentCurrency, requestedCurrency) {
+    renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
         if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
-            return this.state.currencyRate.map((currRate, index) => {
-                return (
-                    <div className="payment_amount"> {amount*(currRate.rates.CZK)+" "+requestedCurrency}</div>
-                )
-            })
+            return <div className="payment_amount"> {amount*rate+" "+requestedCurrency}</div>
         } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
-            return this.state.currencyRate.map((currRate, index) => {
-                return (
-                    <div className="payment_amount"> {amount*(currRate.rates.CZK)+" "+requestedCurrency}</div>
-                )
-            })
+            return <div className="payment_amount"> {amount/rate+" "+requestedCurrency}</div>
         } else {
-            return <div className="payment_amount"> {amount}</div>
+            return <div className="payment_amount"> {amount+" CZK"}</div>
         }
     }
 
@@ -200,6 +201,10 @@ export default class MainPage extends Component {
             }
         }
         this.setState({paymentsAll: temp});
+    }
+
+    onCurrencyChange(a) {
+        console.log(a);
     }
 
     handleDateFromChange(e) {
