@@ -28,6 +28,7 @@ export default class MainPage extends Component {
             currentPagePayments: [],
             currencyRate: [],
             checkedCategories: "",
+            currency: "CZK",
             dateTo: dateto,
             dateFrom: datefrom,
             pageSize: 5,
@@ -68,7 +69,14 @@ export default class MainPage extends Component {
             //let currRate = await API_Calls.getCurrencyRate("CZK", "EUR");
             this.updateData(result);
             this.setState({paymentsAll: resultAll});
-            //this.setState({currencyRate: currRate});
+
+            fetch('http://data.fixer.io/api/latest?access_key=f8b5504f1235a75a4b50a6ab2c986fb1')
+                .then(res => res.json())
+                .then((data) => {
+                    this.setState({ currencyRate: data.rates})
+                })
+                .catch(console.log)
+
         } catch (error) {
             this.setState({error: error});
         }
@@ -91,9 +99,8 @@ export default class MainPage extends Component {
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
-                            <div
-                                className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
-                            <div className="logout_button"><a href=".">Odhlásit se</a></div>
+                            <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
+                            <div className="logout_button btn btn-sm btn-link p-0" onClick={this.props.onLogout}>Odhlásit se</div>
                         </div>
                     </div>
                     <Categories onCheckedCategoryChanged={this.handleCategories}/>
@@ -110,10 +117,11 @@ export default class MainPage extends Component {
                         <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom}
                                value={this.state.dateTo} onChange={this.handleDateToChange}/>
                         <label htmlFor="currency">Měna: </label>
-                        <select id="currency_input" name="currency_input">
-                            <option value="0">CZK</option>
-                            <option value="1">EUR</option>
-                            <option value="2">Nespecifikováno</option>
+                        <select id="currency_input" name="currency_input" onChange={(val) =>
+                            this.onCurrencyChange(val.target.value)}>
+                            <option value="CZK">CZK</option>
+                            <option value="EUR">EUR</option>
+                            <option value="NON">Nespecifikováno</option>
                         </select>
                     </div>
                     {this.renderPaymentData2()}
@@ -131,8 +139,9 @@ export default class MainPage extends Component {
                 <div className="charts">
                     <PieChartAll categorySummaryAll={this.getCategorySummaryAll()}/>
                     <PieChartSelected categorySummarySelected={this.getCategorySummarySelected()}/>
+                    <LineChartSelected lineChartData={this.getDataForLineChart()}/>
                 </div>
-                <LineChartSelected lineChartData={this.getDataForLineChart()}/>
+
             </div>
         )
     }
@@ -164,21 +173,13 @@ export default class MainPage extends Component {
         </div>)
     }
 
-    renderPaymentAmount(amount, currentCurrency, requestedCurrency) {
+    renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
         if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
-            return this.state.currencyRate.map((currRate, index) => {
-                return (
-                    <div className="payment_amount"> {amount*(currRate.rates.CZK)+" "+requestedCurrency}</div>
-                )
-            })
+            return <div className="payment_amount"> {Number.parseInt(amount*rate).toFixed(2)+" "+requestedCurrency}</div>
         } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
-            return this.state.currencyRate.map((currRate, index) => {
-                return (
-                    <div className="payment_amount"> {amount*(currRate.rates.CZK)+" "+requestedCurrency}</div>
-                )
-            })
+            return <div className="payment_amount"> {Number.parseInt(amount/rate).toFixed(2)+" "+requestedCurrency} </div>
         } else {
-            return <div className="payment_amount"> {amount}</div>
+            return <div className="payment_amount"> {amount+" CZK"}</div>
         }
     }
 
@@ -248,10 +249,14 @@ export default class MainPage extends Component {
     }
 
     handlePageClick = (data) => {
-        this.setState({ currentPage: data.selected}, () => {
+        this.setState({currentPage: data.selected}, () => {
             this.setElementsForCurrentPage();
             this.render();
         });
+    }
+
+    onCurrencyChange(a) {
+        this.setState({currency: a});
     }
 
     handleDateFromChange(e) {
@@ -391,6 +396,7 @@ export default class MainPage extends Component {
                 newestDate = moment();
             }
         }
+
         let differenceMonth;
         for (let i = 0; i < paymentsArr.length; i++) {
 
@@ -482,8 +488,12 @@ export default class MainPage extends Component {
                 case 5:
                     indexOfEmptyColumn[i] = "Bydlení";
                     break;
+                default:
+                    indexOfEmptyColumn[i] = "Nezařazeno";
+                    break;
             }
         }
+
         return indexOfEmptyColumn;
     }
 

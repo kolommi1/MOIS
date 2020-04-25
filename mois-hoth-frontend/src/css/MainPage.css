@@ -11,12 +11,19 @@
     min-width: 600px;
     width: 80%;
     margin: 0 auto;
+    flex-wrap: wrap;
 }
 
 .LineChartSelected {
     margin: 0 auto;
     width: 80%;
+    flex-basis: 100%;
 }
+
+.PieChartSelected, .PieChartAll{
+    flex-basis: 50%;
+}
+
 .payments {
     border-radius: 5px;
     min-width: 600px;
@@ -52,8 +59,8 @@
 .payment_middle {
     flex-basis: 50%;
     text-align: left;
-    border-left: 1px solid royalblue;
-    border-right: 1px solid royalblue;
+    border-left: 1px solid #B0C4DE;
+    border-right: 1px solid #B0C4DE;
     padding: 15px;
     margin: 5px;
 }
@@ -169,11 +176,11 @@ hr.divider {
     }
 
     .payment_left {
-        border-bottom: 1px solid royalblue;
+        border-bottom: 1px solid #B0C4DE;
     }
 
     .payment_right {
-        border-top: 1px solid royalblue;
+        border-top: 1px solid #B0C4DE;
     }
 
     .payment_middle {
