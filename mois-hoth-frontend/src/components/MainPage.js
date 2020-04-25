@@ -25,6 +25,7 @@ export default class MainPage extends Component {
             paymentsAll: [],
             currencyRate: [],
             checkedCategories: "",
+            currency: "CZK",
             dateTo: dateto,
             dateFrom: datefrom
         };
@@ -60,10 +61,8 @@ export default class MainPage extends Component {
         try {
             let result = await API_Calls.getPaymentsByDateByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user);
             let resultAll = await API_Calls.getPaymentsByUser(this.props.user.userAccount.accountNumber_user);
-            //let currRate = await API_Calls.getCurrencyRate("CZK", "EUR");
             this.setState({payments: result});
             this.setState({paymentsAll: resultAll});
-            //this.setState({currencyRate: currRate});
 
             fetch('http://data.fixer.io/api/latest?access_key=f8b5504f1235a75a4b50a6ab2c986fb1')
                 .then(res => res.json())
@@ -112,7 +111,8 @@ export default class MainPage extends Component {
                         <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom}
                                value={this.state.dateTo} onChange={this.handleDateToChange}/>
                         <label htmlFor="currency">Měna: </label>
-                        <select id="currency_input" name="currency_input" onChange={(val) => this.onCurrencyChange(val.target.value)}>
+                        <select id="currency_input" name="currency_input" onChange={(val) =>
+                            this.onCurrencyChange(val.target.value)}>
                             <option value="CZK">CZK</option>
                             <option value="EUR">EUR</option>
                             <option value="NON">Nespecifikováno</option>
@@ -143,7 +143,6 @@ export default class MainPage extends Component {
         })
     }
 
-
     renderPaymentData2() {
         return this.state.payments.map((payment, index) => {
             return (
@@ -168,7 +167,7 @@ export default class MainPage extends Component {
                         <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
                     </div>
                     <div className="payment_right">
-                        {this.renderPaymentAmount(payment.value.amount, payment.value.currency,"CZK",
+                        {this.renderPaymentAmount(payment.value.amount, payment.value.currency,this.state.currency,
                             this.state.currencyRate.CZK)}
                     </div>
                 </div>
@@ -178,9 +177,9 @@ export default class MainPage extends Component {
 
     renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
         if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
-            return <div className="payment_amount"> {amount*rate+" "+requestedCurrency}</div>
+            return <div className="payment_amount"> {Number.parseInt(amount*rate+" "+requestedCurrency).toFixed(2)}</div>
         } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
-            return <div className="payment_amount"> {amount/rate+" "+requestedCurrency}</div>
+            return <div className="payment_amount"> {Number.parseInt(amount/rate+" "+requestedCurrency).toFixed(2)}</div>
         } else {
             return <div className="payment_amount"> {amount+" CZK"}</div>
         }
@@ -204,7 +203,7 @@ export default class MainPage extends Component {
     }
 
     onCurrencyChange(a) {
-        console.log(a);
+        this.setState({currency: a});
     }
 
     handleDateFromChange(e) {
@@ -320,8 +319,6 @@ export default class MainPage extends Component {
 
         let emptyCats = this.checkEmptyColumns(preparedArrayForLineChart);
         return this.deleteEmptyColumns(emptyCats, preparedArrayForLineChart);
-
-
     }
 
     getOldestAndNewestPayment(paymentsArr) {

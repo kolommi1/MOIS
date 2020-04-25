@@ -65,14 +65,6 @@ let API_Calls = {
         let commandUri = this.getUri("paymentItem");
         return await API_Calls.call("put", commandUri, payment);
     },
-
-    async getCurrencyRate(baseCurrency, requestedCurrency, dtoIn){
-        return await API_Calls.call("get",
-            "https://api.exchangeratesapi.io/latest?symbols="+requestedCurrency+"&base="+baseCurrency,
-            dtoIn);
-/*        return await API_Calls.call("get",
-            "http://data.fixer.io/api/latest?access_key=f8b5504f1235a75a4b50a6ab2c986fb1",dtoIn);*/
-    }
 };
 
 export default API_Calls;
