@@ -201,7 +201,7 @@ export default class MainPage extends Component {
     }
 
     updateData(payments) {
-        this.setState({payments: payments, pageCount: Math.ceil(payments.length / this.state.pageSize)}, () => this.setElementsForCurrentPage());
+        this.setState({payments: payments, currentPage: 0, pageCount: Math.ceil(payments.length / this.state.pageSize)}, () => this.setElementsForCurrentPage());
     }
 
     calculatePaymentSum() {
