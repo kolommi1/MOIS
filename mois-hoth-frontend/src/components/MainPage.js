@@ -97,13 +97,14 @@ export default class MainPage extends Component {
                 <header className="App-header">
                     <div className="userPanel">
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
+                        <Categories onCheckedCategoryChanged={this.handleCategories}/>
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
                             <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
                             <div className="logout_button btn btn-sm btn-link p-0" onClick={this.props.onLogout}>Odhlásit se</div>
                         </div>
                     </div>
-                    <Categories onCheckedCategoryChanged={this.handleCategories}/>
+
                 </header>
 
                 <Modal onSubmitModal={this.onSummitModal}/>
@@ -213,8 +214,8 @@ export default class MainPage extends Component {
     }
 
     setElementsForCurrentPage() {
-        let sliceFrom = this.state.currentPage == 0 ? 0 : this.state.currentPage * this.state.pageSize;
-        let sliceTo = this.state.currentPage == 0 ? (this.state.pageSize) : (this.state.currentPage * this.state.pageSize) + this.state.pageSize;
+        let sliceFrom = this.state.currentPage === 0 ? 0 : this.state.currentPage * this.state.pageSize;
+        let sliceTo = this.state.currentPage === 0 ? (this.state.pageSize) : (this.state.currentPage * this.state.pageSize) + this.state.pageSize;
         let elements = this.state.payments
             .slice(sliceFrom, sliceTo)
             .map((payment, index) => {

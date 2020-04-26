@@ -150,7 +150,7 @@ class Modal extends Component {
                 </div>
 
                 <div className="text-center">
-                    <button className="btn btn-default btn-rounded mb-4" data-toggle="modal"
+                    <button className="new-payment-button" data-toggle="modal"
                        data-target="#modalRegisterForm">Nová platba</button>
                 </div>
             </div>

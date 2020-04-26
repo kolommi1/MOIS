@@ -1,4 +1,3 @@
-
 .dates input{
     margin-left: 10px;
     margin-right: 10px;
@@ -34,7 +33,7 @@
 }
 
 .payments h5 {
- text-align: left;
+    text-align: left;
 }
 
 .payment_amount {
@@ -73,7 +72,7 @@
 }
 
 .userLogo{
-    flex-basis:50%;
+    flex-basis: 25%;
     text-align: left;
     display: table-cell;
     vertical-align: middle;
@@ -87,19 +86,20 @@ hr.divider {
 }
 .userPanel {
     display: flex;
-    padding: 50px;
+    padding: 10px;
     justify-content: center;
     align-items: center;
 }
 
 .userInfo {
-    flex-basis: 50%;
+    flex-basis: 15%;
     text-align: right;
     margin: 25px;
 }
 
 .categories{
     display: block;
+    margin-top: 40px;
 }
 .category-checkbox-button{
     display: inline-block;
@@ -107,7 +107,7 @@ hr.divider {
 }
 .category-checkbox-button span{
     margin: 5px;
-    padding: 10px 25px;
+    padding: 10px 20px;
     background-color: #EFEFEF;
     border-radius: 4px;
     border: 1px solid #D0D0D0;
@@ -115,7 +115,16 @@ hr.divider {
     color: black;
 }
 
-.category-checkbox-button:hover > span{
+.new-payment-button{
+    margin: 5px !important;
+    padding: 5px 10px !important;
+    color: black;
+    border-radius: 4px;
+    border: 1px solid #D0D0D0;
+    background-color: aliceblue;
+}
+
+.category-checkbox-button:hover > span, .new-payment-button:hover{
     background: lightskyblue;
     color: black;
 }
@@ -186,6 +195,19 @@ hr.divider {
     .payment_middle {
         border-left: 0;
         border-right: 0;
+    }
+
+    .userPanel {
+        flex-direction: column;
+    }
+
+    .userInfo {
+        text-align: center;
+    }
+
+    .categories{
+        order: 3;
+        margin-top: 5px;
     }
 
 }
