@@ -147,7 +147,9 @@ export default class MainPage extends Component {
 
     async onSummitModal(newPayment) {
         // new payments are from current logged user
-        newPayment.userAccount = this.props.user.userAccount;
+        newPayment.userAccount.prefix_user = +this.props.user.userAccount.prefix_user;
+        newPayment.userAccount.accountNumber_user = +this.props.user.userAccount.accountNumber_user;
+        newPayment.userAccount.bankCode_user = +this.props.user.userAccount.bankCode_user;
 
         let new_Payment = await API_Calls.postPayment(newPayment);
 

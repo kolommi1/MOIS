@@ -13,32 +13,32 @@ class Modal extends Component {
                     "currency": ""
                 },
                 "userAccount": {
-                    "prefix_user": "",
-                    "accountNumber_user": "",
-                    "bankCode_user": ""
+                    "prefix_user": 0,
+                    "accountNumber_user": 0,
+                    "bankCode_user": 0
                 },
                 "partyAccount": {
-                    "prefix": "",
-                    "accountNumber": "",
-                    "bankCode": ""
+                    "prefix": 0,
+                    "accountNumber": 0,
+                    "bankCode": 0
                 },
                 "dueDate": "",
                 "recurringPayment": {
-                    "firstPayment": "",
-                    "lastPayment": "",
-                    "interval": ""
+                    "firstPayment": "First payment",
+                    "lastPayment": "Last payment",
+                    "interval": "WEEK"
                 },
                 "payeeMessage": "",
                 "payerMessage": "",
                 "categoryId": 0,
                 "additionalInfo": {
-                    "constantSymbol": "",
-                    "variableSymbol": "",
-                    "specificSymbol": ""
+                    "constantSymbol": 0,
+                    "variableSymbol": 0,
+                    "specificSymbol": 0
                 },
-                "id": 0,
+                "id": "",
                 "editableByUser": true,
-                "realizationStatus": ""
+                "realizationStatus": "RTS_REALISED"
             },
         };
 
@@ -84,7 +84,10 @@ class Modal extends Component {
                                 <div className="md-form mb-2">
                                     <div>
                                         <label data-error="wrong" data-success="right" htmlFor="curr"> Měna </label>
-                                        <input type="text" id="curr" className="form-control validate" value={this.state.payment.value.currency} onChange={this.handleCurrChange}/>
+                                        <select className="form-control validate" id="curr" name="curr" onChange={this.handleCurrChange} value={this.state.payment.value.currency}>
+                                            <option value="CZK">CZK</option>
+                                            <option value="EUR">EUR</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -94,18 +97,18 @@ class Modal extends Component {
 
                                 <div className="md-form mb-2">
                                     <label data-error="wrong" data-success="right" htmlFor="acc_pref"> Prefix </label>
-                                    <input type="text" id="acc_pref" className="form-control validate" value={this.state.payment.partyAccount.prefix} onChange={this.handlePrefixChange}/>
+                                    <input type="number" id="acc_pref" className="form-control validate" value={this.state.payment.partyAccount.prefix} onChange={this.handlePrefixChange}/>
 
                                 </div>
 
                                 <div className="md-form mb-2">
                                     <label data-error="wrong" data-success="right" htmlFor="acc_numb">Číslo</label>
-                                    <input type="text" id="acc_numb" className="form-control validate" value={this.state.payment.partyAccount.accountNumber} onChange={this.handleAccNumberChange}/>
+                                    <input type="number" id="acc_numb" className="form-control validate" value={this.state.payment.partyAccount.accountNumber} onChange={this.handleAccNumberChange}/>
                                 </div>
 
                                 <div className="md-form mb-2">
                                     <label data-error="wrong" data-success="right" htmlFor="acc_code">Kód banky</label>
-                                    <input type="text" id="acc_code" className="form-control validate" value={this.state.payment.partyAccount.bankCode} onChange={this.handleBankCodeChange}/>
+                                    <input type="number" id="acc_code" className="form-control validate" value={this.state.payment.partyAccount.bankCode} onChange={this.handleBankCodeChange}/>
                                 </div>
 
                                 <div>
@@ -114,17 +117,17 @@ class Modal extends Component {
 
                                 <div className="md-form mb-2">
                                     <label data-error="wrong" data-success="right" htmlFor="var_s"> Variabilní symbol </label>
-                                    <input type="text" id="var_s" className="form-control validate" value={this.state.payment.additionalInfo.variableSymbol} onChange={this.handleVSChange}/>
+                                    <input type="number" id="var_s" className="form-control validate" value={this.state.payment.additionalInfo.variableSymbol} onChange={this.handleVSChange}/>
                                 </div>
 
                                 <div className="md-form mb-2">
                                     <label data-error="wrong" data-success="right" htmlFor="kons_s"> Konstantní symbol</label>
-                                    <input type="text" id="kons_s" className="form-control validate" value={this.state.payment.additionalInfo.constantSymbol} onChange={this.handleCSChange}/>
+                                    <input type="number" id="kons_s" className="form-control validate" value={this.state.payment.additionalInfo.constantSymbol} onChange={this.handleCSChange}/>
                                 </div>
 
                                 <div className="md-form mb-2">
                                     <label data-error="wrong" data-success="right" htmlFor="spec_s">Specifický symbol</label>
-                                    <input type="text" id="spec_s" className="form-control validate" value={this.state.payment.additionalInfo.specificSymbol} onChange={this.handleSSChange}/>
+                                    <input type="number" id="spec_s" className="form-control validate" value={this.state.payment.additionalInfo.specificSymbol} onChange={this.handleSSChange}/>
 
                                 </div>
 
@@ -158,7 +161,7 @@ class Modal extends Component {
     }
 
     handleAmountChange(e) {
-        const value = e.target.value;
+        const value = +e.target.value;
         this.setState(prevState => ({
             payment: {
                 ...prevState.payment,
@@ -184,7 +187,7 @@ class Modal extends Component {
     }
 
     handlePrefixChange(e) {
-        const value = e.target.value;
+        const value = +e.target.value;
         this.setState(prevState => ({
             payment: {
                 ...prevState.payment,
@@ -197,7 +200,7 @@ class Modal extends Component {
     }
 
     handleAccNumberChange(e) {
-        const value = e.target.value;
+        const value = +e.target.value;
         this.setState(prevState => ({
             payment: {
                 ...prevState.payment,
@@ -210,7 +213,7 @@ class Modal extends Component {
     }
 
     handleBankCodeChange(e) {
-        const value = e.target.value;
+        const value = +e.target.value;
         this.setState(prevState => ({
             payment: {
                 ...prevState.payment,
@@ -223,7 +226,7 @@ class Modal extends Component {
     }
 
     handleVSChange(e) {
-        const value = e.target.value;
+        const value = +e.target.value;
         this.setState(prevState => ({
             payment: {
                 ...prevState.payment,
@@ -236,7 +239,7 @@ class Modal extends Component {
     }
 
     handleCSChange(e) {
-        const value = e.target.value;
+        const value = +e.target.value;
         this.setState(prevState => ({
             payment: {
                 ...prevState.payment,
@@ -249,7 +252,7 @@ class Modal extends Component {
     }
 
     handleSSChange(e) {
-        const value = e.target.value;
+        const value = +e.target.value;
         this.setState(prevState => ({
             payment: {
                 ...prevState.payment,
