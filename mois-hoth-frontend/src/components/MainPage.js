@@ -97,18 +97,15 @@ export default class MainPage extends Component {
                 <header className="App-header">
                     <div className="userPanel">
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
-                        <Categories onCheckedCategoryChanged={this.handleCategories}/>
+
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
                             <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
                             <div className="logout_button btn btn-sm btn-link p-0" onClick={this.props.onLogout}>Odhlásit se</div>
                         </div>
                     </div>
-
                 </header>
-
-                <Modal onSubmitModal={this.onSummitModal}/>
-
+                <Categories onCheckedCategoryChanged={this.handleCategories}/>
                 <div className="payments">
                     <div className="dates">
                         <label htmlFor="dateFrom">Platby od: </label>
@@ -128,6 +125,7 @@ export default class MainPage extends Component {
                     {this.renderPaymentData2()}
 
                 </div>
+                <Modal onSubmitModal={this.onSummitModal}/>
                 <hr className="divider"/>
                 <div className="overview">
                     <span className="overviewValues">

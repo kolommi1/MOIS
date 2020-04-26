@@ -72,7 +72,7 @@
 }
 
 .userLogo{
-    flex-basis: 25%;
+    flex-basis: 50%;
     text-align: left;
     display: table-cell;
     vertical-align: middle;
@@ -92,14 +92,14 @@ hr.divider {
 }
 
 .userInfo {
-    flex-basis: 15%;
+    flex-basis: 50%;
     text-align: right;
     margin: 25px;
 }
 
 .categories{
     display: block;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 .category-checkbox-button{
     display: inline-block;
@@ -205,10 +205,6 @@ hr.divider {
         text-align: center;
     }
 
-    .categories{
-        order: 3;
-        margin-top: 5px;
-    }
 
 }
 
