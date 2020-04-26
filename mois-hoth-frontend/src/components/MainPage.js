@@ -11,8 +11,6 @@ import ReactPaginate from 'react-paginate';
 import moment from "moment";
 
 export default class MainPage extends Component {
-
-
     constructor(props) {
         super(props);
 
@@ -28,12 +26,13 @@ export default class MainPage extends Component {
             currentPagePayments: [],
             currencyRate: [],
             checkedCategories: "",
-            currency: "CZK",
+            currencyState: "CZK",
             dateTo: dateto,
             dateFrom: datefrom,
             pageSize: 5,
             currentPage: 0,
         };
+
         this.handleCategories = this.handleCategories.bind(this);
         this.onSummitModal = this.onSummitModal.bind(this);
         this.getCategorySummarySelected = this.getCategorySummarySelected.bind(this);
@@ -44,48 +43,20 @@ export default class MainPage extends Component {
         this.onCatsInputChange = this.onCatsInputChange.bind(this);
     }
 
-    handleCategories = (categoriesValue) => {
-        this.setState({checkedCategories: categoriesValue});
-        if (categoriesValue.length > 0) {
-            this.updateTable(this.state.dateFrom, this.state.dateTo, categoriesValue);
-        } else {
-            this.updateTableNoCategory(this.state.dateFrom, this.state.dateTo);
-        }
-    };
-
-    async updateTable(dateFrom, dateTo, categoryIds) {
-        try {
-            let result = await API_Calls.getPaymentsByDateByCategoryByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user, categoryIds);
-            this.updateData(result);
-        } catch (error) {
-            this.setState({error: error});
-        }
-    }
-
     async componentDidMount() {
         try {
             let result = await API_Calls.getPaymentsByDateByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user);
             let resultAll = await API_Calls.getPaymentsByUser(this.props.user.userAccount.accountNumber_user);
-            //let currRate = await API_Calls.getCurrencyRate("CZK", "EUR");
             this.updateData(result);
             this.setState({paymentsAll: resultAll});
 
             fetch('http://data.fixer.io/api/latest?access_key=f8b5504f1235a75a4b50a6ab2c986fb1')
                 .then(res => res.json())
                 .then((data) => {
-                    this.setState({ currencyRate: data.rates})
+                    this.setState({currencyRate: data.rates})
                 })
                 .catch(console.log)
 
-        } catch (error) {
-            this.setState({error: error});
-        }
-    }
-
-    async updateTableNoCategory(dateFrom, dateTo) {
-        try {
-            let result = await API_Calls.getPaymentsByDateByUser(dateFrom, dateTo, this.props.user.userAccount.accountNumber_user);
-            this.updateData(result);
         } catch (error) {
             this.setState({error: error});
         }
@@ -97,11 +68,13 @@ export default class MainPage extends Component {
                 <header className="App-header">
                     <div className="userPanel">
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
-
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>
-                            <div className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
-                            <div className="logout_button btn btn-sm btn-link p-0" onClick={this.props.onLogout}>Odhlásit se</div>
+                            <div
+                                className="userAccountNumber">{this.props.user.userAccount.prefix_user}-{this.props.user.userAccount.accountNumber_user}/{this.props.user.userAccount.bankCode_user}</div>
+                            <div className="logout_button btn btn-sm btn-link p-0"
+                                 onClick={this.props.onLogout}>Odhlásit se
+                            </div>
                         </div>
                     </div>
                 </header>
@@ -145,6 +118,101 @@ export default class MainPage extends Component {
         )
     }
 
+    renderPaymentData2() {
+        let paginationElement;
+        if (this.state.pageCount > 1) {
+            paginationElement = (
+                <ReactPaginate pageCount={this.state.pageCount} previousLabel={"← Předchozí"}
+                               nextLabel={"Následující →"}
+                               breakLabel={<span className="gap">...</span>}
+                               onPageChange={this.handlePageClick} forcePage={this.state.currentPage}
+                               containerClassName={"pagination"}
+                               previousLinkClassName={"previous_page"} nextLinkClassName={"next_page"}
+                               disabledClassName={"disabled"} activeClassName={"active"}
+                               initialPage={this.state.currentPage}/>)
+        }
+        return (<div>
+            {this.state.currentPagePayments}
+            {paginationElement}
+        </div>)
+    }
+
+    renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
+        console.log("aa: " + requestedCurrency);
+        if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
+            return <div
+                className="payment_amount"> {Number.parseInt(amount * rate).toFixed(2) + " " + requestedCurrency}</div>
+        } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
+            return <div
+                className="payment_amount"> {Number.parseInt(amount / rate).toFixed(2) + " " + requestedCurrency} </div>
+        } else {
+            return <div className="payment_amount"> {amount + " CZK"}</div>
+        }
+    }
+
+    setElementsForCurrentPage() {
+        let sliceFrom = this.state.currentPage === 0 ? 0 : this.state.currentPage * this.state.pageSize;
+        let sliceTo = this.state.currentPage === 0 ? (this.state.pageSize) : (this.state.currentPage * this.state.pageSize) + this.state.pageSize;
+        let elements = this.state.payments
+            .slice(sliceFrom, sliceTo)
+            .map((payment, index) => {
+                return (
+                    <div className="payment" key={payment.id}>
+                        <div className="payment_left">
+                            <div
+                                className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
+                            <span className="payment_category">Kategorie: </span>
+                            <select id="cats_input" name="cats_input"
+                                    onChange={(e) => this.onCatsInputChange(payment, index, e)}
+                                    value={payment.categoryId}>
+                                <option value="0">Nezařazeno</option>
+                                <option value="1">Jídlo</option>
+                                <option value="2">Oblečení</option>
+                                <option value="3">Cestování</option>
+                                <option value="4">Hygiena</option>
+                                <option value="5">Bydlení</option>
+                            </select>
+                        </div>
+                        <div className="payment_middle">
+                            <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
+                            <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
+                        </div>
+                        <div className="payment_right">
+                            {this.renderPaymentAmount(payment.value.amount, payment.value.currency, this.state.currencyState,
+                                this.state.currencyRate.CZK)}
+                        </div>
+                    </div>
+                )
+            });
+        this.setState({currentPagePayments: elements});
+    }
+
+    updateData(payments) {
+        this.setState({
+            payments: payments,
+            currentPage: 0,
+            pageCount: Math.ceil(payments.length / this.state.pageSize)
+        }, () => this.setElementsForCurrentPage());
+    }
+
+    async updateTable(dateFrom, dateTo, categoryIds) {
+        try {
+            let result = await API_Calls.getPaymentsByDateByCategoryByUser(this.state.dateFrom, this.state.dateTo, this.props.user.userAccount.accountNumber_user, categoryIds);
+            this.updateData(result);
+        } catch (error) {
+            this.setState({error: error});
+        }
+    }
+
+    async updateTableNoCategory(dateFrom, dateTo) {
+        try {
+            let result = await API_Calls.getPaymentsByDateByUser(dateFrom, dateTo, this.props.user.userAccount.accountNumber_user);
+            this.updateData(result);
+        } catch (error) {
+            this.setState({error: error});
+        }
+    }
+
     async onSummitModal(newPayment) {
         // new payments are from current logged user
         newPayment.userAccount.prefix_user = +this.props.user.userAccount.prefix_user;
@@ -157,31 +225,6 @@ export default class MainPage extends Component {
         this.setState({
             paymentsAll: this.state.paymentsAll.concat([new_Payment]),
         })
-    }
-
-    renderPaymentData2() {
-        let paginationElement;
-        if (this.state.pageCount > 1) {
-            paginationElement = (
-                <ReactPaginate pageCount={this.state.pageCount} previousLabel={"← Předchozí"} nextLabel={"Následující →"}
-                               breakLabel={<span className="gap">...</span>}
-                               onPageChange={this.handlePageClick} forcePage={this.state.currentPage} containerClassName={"pagination"}
-                               previousLinkClassName={"previous_page"} nextLinkClassName={"next_page"} disabledClassName={"disabled"} activeClassName={"active"} initialPage={this.state.currentPage}/>)
-        }
-        return (<div>
-            {this.state.currentPagePayments}
-            {paginationElement}
-        </div>)
-    }
-
-    renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
-        if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
-            return <div className="payment_amount"> {Number.parseInt(amount*rate).toFixed(2)+" "+requestedCurrency}</div>
-        } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
-            return <div className="payment_amount"> {Number.parseInt(amount/rate).toFixed(2)+" "+requestedCurrency} </div>
-        } else {
-            return <div className="payment_amount"> {amount+" CZK"}</div>
-        }
     }
 
     async onCatsInputChange(editedPayment, index, e) {
@@ -201,52 +244,12 @@ export default class MainPage extends Component {
         this.setState({paymentsAll: temp});
     }
 
-    updateData(payments) {
-        this.setState({payments: payments, currentPage: 0, pageCount: Math.ceil(payments.length / this.state.pageSize)}, () => this.setElementsForCurrentPage());
-    }
-
     calculatePaymentSum() {
         let sum = 0.0;
-        this.state.payments.forEach((payment)=> {
+        this.state.payments.forEach((payment) => {
             sum += payment.value.amount;
         });
         return (sum);
-    }
-
-    setElementsForCurrentPage() {
-        let sliceFrom = this.state.currentPage === 0 ? 0 : this.state.currentPage * this.state.pageSize;
-        let sliceTo = this.state.currentPage === 0 ? (this.state.pageSize) : (this.state.currentPage * this.state.pageSize) + this.state.pageSize;
-        let elements = this.state.payments
-            .slice(sliceFrom, sliceTo)
-            .map((payment, index) => {
-                return (
-                    <div className="payment" key={payment.id}>
-                        <div className="payment_left">
-                            <div
-                                className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
-                            <span className="payment_category">Kategorie: </span>
-                            <select id="cats_input" name="cats_input"
-                                    onChange={(e) => this.onCatsInputChange(payment, index, e)} value={payment.categoryId}>
-                                <option value="0">Nezařazeno</option>
-                                <option value="1">Jídlo</option>
-                                <option value="2">Oblečení</option>
-                                <option value="3">Cestování</option>
-                                <option value="4">Hygiena</option>
-                                <option value="5">Bydlení</option>
-                            </select>
-                        </div>
-                        <div className="payment_middle">
-                            <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
-                            <div className="payment_date">Datum uskutečnění platby: {payment.dueDate}</div>
-                        </div>
-                        <div className="payment_right">
-                            {<div className="payment_amount">{payment.value.amount} Kč</div>}
-                            {/*{this.renderPaymentAmount(payment.value.amount, payment.value.currency,"EUR")}*/}
-                        </div>
-                    </div>
-                )
-            });
-        this.setState({ currentPagePayments: elements });
     }
 
     handlePageClick = (data) => {
@@ -256,9 +259,23 @@ export default class MainPage extends Component {
         });
     }
 
-    onCurrencyChange(a) {
-        this.setState({currency: a});
+    onCurrencyChange(currency) {
+        this.setState({currencyState: currency});
+        if (this.state.checkedCategories.length > 0) {
+            this.updateTable(this.state.dateFrom, this.state.dateTo, this.state.checkedCategories);
+        } else {
+            this.updateTableNoCategory(this.state.dateFrom, this.state.dateTo);
+        }
     }
+
+    handleCategories = (categoriesValue) => {
+        this.setState({checkedCategories: categoriesValue});
+        if (categoriesValue.length > 0) {
+            this.updateTable(this.state.dateFrom, this.state.dateTo, categoriesValue);
+        } else {
+            this.updateTableNoCategory(this.state.dateFrom, this.state.dateTo);
+        }
+    };
 
     handleDateFromChange(e) {
         const value = e.target.value;
@@ -354,7 +371,8 @@ export default class MainPage extends Component {
         for (let i = 0; i < paymentsArr.length; i++) {
             if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
                 let paymentDueDateSplit = paymentsArr[i].dueDate.split(".");
-                dateHelp = new Date(Number.parseInt(paymentDueDateSplit[2]), Number.parseInt(paymentDueDateSplit[1]) - 1, 1, 0, 0, 0, 0);
+                dateHelp = new Date(Number.parseInt(paymentDueDateSplit[2]),
+                    Number.parseInt(paymentDueDateSplit[1]) - 1, 1, 0, 0, 0, 0);
             } else {
                 paymentDueDate = moment(this.changeDate(paymentsArr[i].dueDate)).format("MM.YYYY");
             }
@@ -403,7 +421,8 @@ export default class MainPage extends Component {
 
             if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
                 let payDateSplit = paymentsArr[i].dueDate.split(".");
-                let payDate = new Date(parseInt(payDateSplit[2]), (payDateSplit[1] - 1) % 12, parseInt(payDateSplit[0]));
+                let payDate = new Date(parseInt(payDateSplit[2]),
+                    (payDateSplit[1] - 1) % 12, parseInt(payDateSplit[0]));
 
                 if (oldestDate >= payDate) {
                     oldestDate = payDate;
@@ -422,10 +441,12 @@ export default class MainPage extends Component {
         }
         if (navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Safari") !== -1) {
             differenceMonth = moment(newestDate).diff(moment(oldestDate), 'months', false);
-            return [moment(oldestDate).format("DD.MM.YYYY"), moment(newestDate).format("DD.MM.YYYY"), differenceMonth + 1];
+            return [moment(oldestDate).format("DD.MM.YYYY"), moment(newestDate).format("DD.MM.YYYY"),
+                differenceMonth + 1];
         } else {
             differenceMonth = newestDate.diff(oldestDate, 'months', false);
-            return [oldestDate.format("DD.MM.YYYY"), newestDate.format("DD.MM.YYYY"), differenceMonth + 1];
+            return [oldestDate.format("DD.MM.YYYY"), newestDate.format("DD.MM.YYYY"),
+                differenceMonth + 1];
         }
     }
 
@@ -494,7 +515,6 @@ export default class MainPage extends Component {
                     break;
             }
         }
-
         return indexOfEmptyColumn;
     }
 
