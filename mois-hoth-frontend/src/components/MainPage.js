@@ -138,15 +138,14 @@ export default class MainPage extends Component {
     }
 
     renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
-        console.log("aa: " + requestedCurrency);
         if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
             return <div
-                className="payment_amount"> {Math.round((Number.parseInt(amount) * Number.parseInt(rate))*100)/1000 + " " + requestedCurrency}</div>
+                className="payment_amount"> {Math.round((Number.parseInt(amount) * Number.parseInt(rate))*100)/100 + " " + requestedCurrency}</div>
         } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
             return <div
-                className="payment_amount"> {Math.round((Number.parseInt(amount) /Number.parseInt(rate))*100)/1000 + " " + requestedCurrency} </div>
+                className="payment_amount"> {Math.round((Number.parseInt(amount) /Number.parseInt(rate))*100)/100 + " " + requestedCurrency} </div>
         } else {
-            return <div className="payment_amount"> {amount + " CZK"}</div>
+            return <div className="payment_amount"> {amount + " " + currentCurrency}</div>
         }
     }
 
