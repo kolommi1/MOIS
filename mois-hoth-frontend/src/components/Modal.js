@@ -10,7 +10,7 @@ class Modal extends Component {
             payment: {
                 "value": {
                     "amount": 0,
-                    "currency": ""
+                    "currency": "CZK"
                 },
                 "userAccount": {
                     "prefix_user": 0,

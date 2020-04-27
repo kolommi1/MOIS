@@ -33,7 +33,7 @@ class PieChartAll extends Component {
                         ]}
 
                         options={{
-                            title: 'Přehled všech kategorií',
+                            title: 'Přehled všech výdajů',
                             chartArea: {width: '100%', height: '70%'},
                             legend: {position: 'top', alignment: 'center'}
                         }}

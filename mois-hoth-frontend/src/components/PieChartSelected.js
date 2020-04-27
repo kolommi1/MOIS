@@ -34,7 +34,7 @@ class PieChartSelected extends Component {
 
 
                         options={{
-                            title: 'Přehled vybraných kategorií',
+                            title: 'Přehled výdajú ve vybraných kategorií za zvolené období',
                             chartArea: {width: '100%', height: '70%'},
                             legend: {position: 'top', alignment: 'center'}
                         }}

@@ -27,7 +27,7 @@ class LineChartSelected extends Component {
                             vAxis: {
                                 title: 'Částka',
                             },
-                            title: 'Přehled výdajů kategorií v čase',
+                            title: 'Přehled výdajů ve vybraných kategoriích za zvolené období',
                             chartArea: {width: '100%', height: '70%'},
                             legend: {position: 'top', alignment: 'center'}
                         }}
