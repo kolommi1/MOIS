@@ -7,7 +7,10 @@ import Chart from "react-google-charts";
 class LineChartSelected extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            chartReff: ""
+        };
+        this.resize = this.resize.bind(this);
     }
 
     render() {
@@ -15,12 +18,14 @@ class LineChartSelected extends Component {
             <div className="LineChartSelected">
                 <div style={{display: 'block', margin: '0 auto', maxWidth: 1200}}>
                     <Chart
-                        width={'1200px'}
+                        width={'100%'}
                         height={'400px'}
-                        chartType="LineChart"
+                        chartType={"LineChart"}
                         loader={<div>Loading Chart</div>}
                         data={this.props.lineChartData}
+                        rootProps={{'data-testid': '2'}}
                         options={{
+
                             hAxis: {
                                 title: 'Datum',
                             },
@@ -28,14 +33,30 @@ class LineChartSelected extends Component {
                                 title: 'Částka',
                             },
                             title: 'Přehled výdajů ve vybraných kategoriích za zvolené období',
-                            chartArea: {width: '100%', height: '70%'},
+                            chartArea: {width: '90%', height: '70%'},
                             legend: {position: 'top', alignment: 'center'}
                         }}
-                        rootProps={{ 'data-testid': '2' }}
+                        getChartWrapper={chartWrapper => {
+                            this.setState({chartReff: chartWrapper});
+                        }}
                     />
                 </div>
             </div>
         )
+    }
+
+    resize(e) {
+        let temp = this.state.chartReff;
+        temp.width=e.innerWidth-100;
+        temp.draw();
+    }
+
+    componentDidMount() {
+        window.addEventListener('resize', this.resize);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resize);
     }
 }
 

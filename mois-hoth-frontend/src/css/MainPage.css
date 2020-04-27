@@ -7,7 +7,6 @@
 
 .charts {
     display: flex;
-    min-width: 600px;
     width: 80%;
     margin: 0 auto;
     flex-wrap: wrap;
@@ -20,7 +19,7 @@
 }
 
 .PieChartSelected, .PieChartAll{
-    flex-basis: 50%;
+    flex-basis: 49%;
 }
 
 .payments {

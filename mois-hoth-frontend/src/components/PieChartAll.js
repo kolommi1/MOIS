@@ -16,9 +16,9 @@ class PieChartAll extends Component {
     render() {
         return (
             <div className="PieChartAll">
-                <div style={{display: 'block', margin: '0 auto', maxWidth: 700}}>
+                <div style={{display: 'block', margin: '0 auto', maxWidth: 600}}>
                     <Chart
-                        width={'600px'}
+                        width={'99%'}
                         height={'400px'}
                         chartType="PieChart"
                         loader={<div>Loading Chart</div>}
