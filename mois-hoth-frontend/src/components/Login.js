@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import logo from "../img/logo.png";
 import '../css/Login.css';
 import API_Calls from "../js/apiCalls";
-import {getToken} from '../js/auth.js';
+import auth from '../js/auth';
 
 import FbLogin from './FbLogin'
 import Alert from './Alert'
@@ -24,19 +24,17 @@ export default class Login extends Component {
     }
 
     componentDidMount() {
-        let token = getToken();
+        let token = auth.getToken();
         if (token) {
             API_Calls.getCurrentUser().then(user => {
                 if (user) {
                     this.props.onLogin(user);
-
-                    console.log('CurrentUser: ');
-                    console.log(this.state.currentUser);
                 } else {
                     this.setState({readyToRender: true});
                 }
             }).catch((e) => {
                 console.log('ERROR:' + e.message);
+                auth.logout();
                 this.setState({readyToRender: true});
             });
         } else {

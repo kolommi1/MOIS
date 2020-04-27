@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Login from "./Login";
 import '../css/App.css';
-import {logout} from '../js/auth.js';
+import auth from '../js/auth';
 
 import MainPage from "./MainPage";
 
@@ -15,12 +15,14 @@ class App extends Component {
         };
     }
 
-    setCredentials = (newUser) => {
+    onLogin = (newUser) => {
+        console.log('Current User:');
+        console.log(newUser);
         this.setState({currentUser: newUser});
     };
 
     onLogout = () => {
-        logout();
+        auth.logout();
         this.setState({
             currentUser: null
         });
@@ -36,7 +38,7 @@ class App extends Component {
         } else {
             return (
                 <div className="App">
-                    <Login onLogin={this.setCredentials}/>
+                    <Login onLogin={this.onLogin}/>
                 </div>
             );
         }

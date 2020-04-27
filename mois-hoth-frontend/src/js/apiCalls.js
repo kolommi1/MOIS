@@ -41,6 +41,11 @@ let API_Calls = {
         return await API_Calls.call("post", commandUri, {mail, password});
     },
 
+    async facebookLogin(fbResponse) {
+        let commandUri = this.getUri("auth/fbLogin");
+        return await API_Calls.call("post", commandUri, fbResponse);
+    },
+
     async getCurrentUser() {
         let commandUri = this.getUri("auth/currentUser");
         return await API_Calls.call("post", commandUri);
