@@ -241,6 +241,8 @@ export default class MainPage extends Component {
             }
         }
         this.setState({paymentsAll: temp});
+
+        this.handleCategories(this.state.checkedCategories)
     }
 
     calculatePaymentSum() {
