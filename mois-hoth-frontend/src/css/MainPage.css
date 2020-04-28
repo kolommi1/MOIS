@@ -1,4 +1,19 @@
-.dates input{
+.dates{
+    text-align: center !important;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.dates > div{
+     margin: 0 auto;
+ }
+
+.dates > div > div{
+    display: inline-flex;
+}
+
+.dates input, .dates select{
+    display: inline-block;
     margin-left: 10px;
     margin-right: 10px;
     border: none;
@@ -96,6 +111,12 @@ hr.divider {
     margin: 25px;
 }
 
+#currency_input{
+    margin-left: 10px;
+    display: inline-block;
+    width: 130px;
+}
+
 .categories{
     display: block;
     margin-top: 30px;
@@ -139,18 +160,25 @@ hr.divider {
     padding-left: 5%;
 }
 
-.active {
-    border-radius: 5px;
-    border: 3px solid #282c34;
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 0px 10px 0px 10px;
-}
-
 .pagination {
     position: relative;
     display: flex;
     justify-content: center;
+}
+
+.pagination > li a {
+    cursor: pointer;
+    padding: 4px 8px 4px 8px;
+    margin-left: 2px;
+}
+
+.pagination > li.active a {
+    border-radius: 5px;
+    border: 3px solid #fff;
+}
+
+.pagination > li a:focus {
+    outline:none;
 }
 
 .previous_page {
@@ -163,6 +191,13 @@ hr.divider {
     right: 15px;
 }
 
+@media (max-width: 1280px) {
+
+    .payments {
+        width: 80%;
+        min-width: 0;
+    }
+}
 
 @media (max-width: 640px) {
 
@@ -172,7 +207,7 @@ hr.divider {
     }
 
     .payments {
-        width: 100%;
+        width: 95%;
         min-width: 0;
     }
     .payment {
@@ -205,12 +240,4 @@ hr.divider {
     }
 
 
-}
-
-@media (max-width: 1280px) {
-
-    .payments {
-        width: 80%;
-        min-width: 0;
-    }
 }

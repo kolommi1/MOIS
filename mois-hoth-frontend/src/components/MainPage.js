@@ -81,19 +81,31 @@ export default class MainPage extends Component {
                 <Categories onCheckedCategoryChanged={this.handleCategories}/>
                 <div className="payments">
                     <div className="dates">
-                        <label htmlFor="dateFrom">Platby od: </label>
-                        <input type="date" required id="dateFrom" max={this.state.dateTo} name="dateFrom"
-                               value={this.state.dateFrom} onChange={this.handleDateFromChange}/>
-                        <label htmlFor="dateTo">do: </label>
-                        <input type="date" required id="dateTo" name="dateTo" min={this.state.dateFrom}
-                               value={this.state.dateTo} onChange={this.handleDateToChange}/>
-                        <label htmlFor="currency">Měna: </label>
-                        <select id="currency_input" name="currency_input" onChange={(val) =>
-                            this.onCurrencyChange(val.target.value)}>
-                            <option value="CZK">CZK</option>
-                            <option value="EUR">EUR</option>
-                            <option value="NON">Nespecifikováno</option>
-                        </select>
+                        <div className="mx-auto d-block">
+                            <div>
+                                <label htmlFor="dateFrom">Platby&nbsp;od: </label>
+                                <input type="date" required className="form-control form-control-sm"
+                                       id="dateFrom" max={this.state.dateTo} name="dateFrom"
+                                       value={this.state.dateFrom} onChange={this.handleDateFromChange}/>
+                            </div>
+                            <div>
+                                <label htmlFor="dateTo">do: </label>
+                                <input type="date" required className="form-control form-control-sm"
+                                       id="dateTo" name="dateTo" min={this.state.dateFrom}
+                                       value={this.state.dateTo} onChange={this.handleDateToChange}/>
+                            </div>
+                            <div>
+                                <label htmlFor="currency">Měna: </label>
+                                <select id="currency_input" className="form-control form-control-sm"
+                                        name="currency_input"
+                                        onChange={(val) =>
+                                            this.onCurrencyChange(val.target.value)}>
+                                    <option value="CZK">CZK</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="NON">Nespecifikováno</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     {this.renderPaymentData2()}
 
@@ -140,10 +152,10 @@ export default class MainPage extends Component {
     renderPaymentAmount(amount, currentCurrency, requestedCurrency, rate) {
         if (requestedCurrency === "CZK" && currentCurrency === "EUR") {
             return <div
-                className="payment_amount"> {Math.round((Number.parseInt(amount) * Number.parseInt(rate))*100)/100 + " " + requestedCurrency}</div>
+                className="payment_amount"> {Math.round((Number.parseInt(amount) * Number.parseInt(rate)) * 100) / 100 + " " + requestedCurrency}</div>
         } else if (requestedCurrency === "EUR" && currentCurrency === "CZK") {
             return <div
-                className="payment_amount"> {Math.round((Number.parseInt(amount) /Number.parseInt(rate))*100)/100 + " " + requestedCurrency} </div>
+                className="payment_amount"> {Math.round((Number.parseInt(amount) / Number.parseInt(rate)) * 100) / 100 + " " + requestedCurrency} </div>
         } else {
             return <div className="payment_amount"> {amount + " " + currentCurrency}</div>
         }
@@ -161,7 +173,7 @@ export default class MainPage extends Component {
                             <div
                                 className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
                             <span className="payment_category">Kategorie: </span>
-                            <select id="cats_input" name="cats_input"
+                            <select id="cats_input" className="form-control form-control-sm" name="cats_input"
                                     onChange={(e) => this.onCatsInputChange(payment, index, e)}
                                     value={payment.categoryId}>
                                 <option value="0">Nezařazeno</option>
