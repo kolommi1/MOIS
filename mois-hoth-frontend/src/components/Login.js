@@ -86,15 +86,15 @@ export default class Login extends Component {
             return (
                 <form className="form-signin" onSubmit={this.handleSubmit}>
                     <img className="App-logo mb-3" src={logo} alt="logo"/>
-                    <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-                    <label htmlFor="inputEmail" className="sr-only">Email address</label>
+                    <h1 className="h3 mb-3 font-weight-normal">Prosíme přihlašte se</h1>
+                    <label htmlFor="inputEmail" className="sr-only">Emailová adresa</label>
                     <input value={this.state.email} onChange={this.handleLoginChange} type="email" id="inputEmail"
-                           className="form-control" placeholder="Email address" required/>
-                    <label htmlFor="inputPassword" className="sr-only">Password</label>
+                           className="form-control" placeholder="Emailová adresa" required/>
+                    <label htmlFor="inputPassword" className="sr-only">Heslo</label>
                     <input value={this.state.password} onChange={this.handlePasswordChange} type="password"
-                           id="inputPassword" className="form-control" placeholder="Password" required/>
-                    <Alert ref={this.alert} message='Wrong email or password!'/>
-                    <button className="btn btn-lg btn-primary btn-block mb-5" type="submit">Sign in</button>
+                           id="inputPassword" className="form-control" placeholder="Heslo" required/>
+                    <Alert ref={this.alert} message='Špatný email nebo heslo!'/>
+                    <button className="btn btn-lg btn-primary btn-block mb-5" type="submit">Přihlásit se</button>
                     <FbLogin onLogin={this.login}/>
                 </form>
             );
