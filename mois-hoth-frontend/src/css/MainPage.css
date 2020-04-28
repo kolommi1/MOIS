@@ -10,6 +10,7 @@
 
 .dates > div > div{
     display: inline-flex;
+    margin-top: 5px;
 }
 
 .dates input, .dates select{
@@ -18,6 +19,12 @@
     margin-right: 10px;
     border: none;
     cursor: pointer;
+}
+
+.cats-input{
+    min-width: 100px;
+    max-width: 170px;
+    margin-right: 0;
 }
 
 .charts {
@@ -191,6 +198,12 @@ hr.divider {
     right: 15px;
 }
 
+.payment_category{
+    /*payment_category mr-2 ml-auto ml-sm-0*/
+    margin-right: 8px;
+    margin-left: 0;
+}
+
 @media (max-width: 1280px) {
 
     .payments {
@@ -229,6 +242,14 @@ hr.divider {
     .payment_middle {
         border-left: 0;
         border-right: 0;
+    }
+
+    .payment_category{
+        margin-left: auto;
+    }
+
+    .cats-input{
+        margin-right: auto;
     }
 
     .userPanel {

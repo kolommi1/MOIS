@@ -162,17 +162,20 @@ export default class MainPage extends Component {
                         <div className="payment_left">
                             <div
                                 className="payment_name">{payment.partyAccount.prefix}-{payment.partyAccount.accountNumber}/{payment.partyAccount.bankCode}</div>
-                            <span className="payment_category">Kategorie: </span>
-                            <select id="cats_input" className="form-control form-control-sm" name="cats_input"
-                                    onChange={(e) => this.onCatsInputChange(payment, index, e)}
-                                    value={payment.categoryId}>
-                                <option value="0">Nezařazeno</option>
-                                <option value="1">Jídlo</option>
-                                <option value="2">Oblečení</option>
-                                <option value="3">Cestování</option>
-                                <option value="4">Hygiena</option>
-                                <option value="5">Bydlení</option>
-                            </select>
+                            <div className="d-flex flex-wrap mx-auto">
+                                <span className="payment_category">Kategorie: </span>
+                                <select id="cats_input" className="cats-input form-control form-control-sm"
+                                        name="cats_input"
+                                        onChange={(e) => this.onCatsInputChange(payment, index, e)}
+                                        value={payment.categoryId}>
+                                    <option value="0">Nezařazeno</option>
+                                    <option value="1">Jídlo</option>
+                                    <option value="2">Oblečení</option>
+                                    <option value="3">Cestování</option>
+                                    <option value="4">Hygiena</option>
+                                    <option value="5">Bydlení</option>
+                                </select>
+                            </div>
                         </div>
                         <div className="payment_middle">
                             <div className="payment_VS">Variabilní symbol: {payment.additionalInfo.variableSymbol}</div>
