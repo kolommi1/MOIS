@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import logo from "../img/logo.png";
+import logo from "../img/M.png";
 import '../css/Login.css';
 import API_Calls from "../js/apiCalls";
 import auth from '../js/auth';
@@ -85,7 +85,7 @@ export default class Login extends Component {
         if (this.state.readyToRender) {
             return (
                 <form className="form-signin" onSubmit={this.handleSubmit}>
-                    <img className="App-logo mb-3" src={logo} alt="logo"/>
+                    <img className="Login-logo mb-3" src={logo} alt="logo"/>
                     <h1 className="h3 mb-3 font-weight-normal">Prosíme přihlašte se</h1>
                     <label htmlFor="inputEmail" className="sr-only">Emailová adresa</label>
                     <input value={this.state.email} onChange={this.handleLoginChange} type="email" id="inputEmail"

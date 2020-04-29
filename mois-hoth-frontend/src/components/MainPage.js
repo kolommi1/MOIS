@@ -60,7 +60,7 @@ export default class MainPage extends Component {
         return (
             <div className="MainPage">
                 <header className="App-header">
-                    <div className="userPanel">
+                    <div className="userPanel container">
                         <div className="userLogo"><img src={logo} className="App-logo" alt="logo"/></div>
                         <div className="userInfo">
                             <div className="userName">{this.props.user.name} {this.props.user.sure_name}</div>

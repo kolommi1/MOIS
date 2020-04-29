@@ -21,9 +21,15 @@ let API_Calls = {
     },
 
     getUri: function (useCase) {
-        return (
-            "http://localhost:5000/" + useCase
-        );
+        if (process.env.NODE_ENV === 'production') {
+            return (
+                "/" + useCase
+            );
+        } else {
+            return (
+                "http://localhost:5000/" + useCase
+            );
+        }
     },
 
     async getPaymentsByUser(accountNumber, dtoIn) {
