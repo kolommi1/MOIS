@@ -45,11 +45,18 @@ export default class MainPage extends Component {
             this.setState({paymentsAll: resultAll});
 
             fetch('http://data.fixer.io/api/latest?access_key=f8b5504f1235a75a4b50a6ab2c986fb1')
-                .then(res => res.json())
+                .then(res => res.json()
                 .then((data) => {
                     this.setState({currencyRate: data.rates})
                 })
-                .catch(console.log)
+                .catch(e => console.log(e)))
+                .catch( () => {
+                    console.log('cannot reach data.fixer.io');
+                    this.setState({currencyRate: {
+                            CZK: 27.115866,
+                            EUR: 1
+                        }})
+                })
 
         } catch (error) {
             this.setState({error: error});
